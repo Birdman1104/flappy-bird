@@ -1,9 +1,9 @@
 {
-  "app.js": "app.55a7c0e1dd64c1df3583.js",
+  "app.js": "app.f2fa4f50df2b26920dd6.js",
   "modules.js": "modules.99af58ec8f346e21d512.js",
-  "assets/atlases/main.png": "assets/atlases/main.png",
-  "assets/atlases/main.json": "assets/atlases/main.json",
+  "atlases/main.png": "atlases/main.png",
+  "atlases/main.json": "atlases/main.json",
   "index.html": "index.html",
-  "assets/atlases/bird.json": "assets/atlases/bird.json",
-  "assets/atlases/bird.png": "assets/atlases/bird.png"
+  "atlases/bird.json": "atlases/bird.json",
+  "atlases/bird.png": "atlases/bird.png"
 }
