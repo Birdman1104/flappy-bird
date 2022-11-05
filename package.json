@@ -1,5 +1,5 @@
 {
-  "name": "updated-flappy-bird",
+  "name": "flappy-bird",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.ts",
