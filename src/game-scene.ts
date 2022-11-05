@@ -1,9 +1,9 @@
 import * as Phaser from "phaser";
-import { CONFIGS } from "../configs";
-import { GameState, STORAGE_NAME, TEXTURES } from "../constants";
-import { BirdComponent } from "../views/bird-component";
-import { PipesComponent } from "../views/pipes-component";
-import { PopupComponent } from "../views/popup-component";
+import { CONFIGS } from "./configs";
+import { GameState, STORAGE_NAME, TEXTURES } from "./constants";
+import { BirdComponent } from "./views/bird-component";
+import { PipesComponent } from "./views/pipes-component";
+import { PopupComponent } from "./views/popup-component";
 
 export class GameScene extends Phaser.Scene {
   private _bg: Phaser.GameObjects.TileSprite;

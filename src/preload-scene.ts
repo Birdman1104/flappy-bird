@@ -1,15 +1,14 @@
 import * as Phaser from "phaser";
-import { BIRD_SHEET, SCENE_NAMES, TEXTURES } from "../constants";
+import { BIRD_SHEET, SCENE_NAMES, TEXTURES } from "./constants";
 
 export class PreloadScene extends Phaser.Scene {
   public preload(): void {
     //
-    console.warn(546132);
   }
 
   public create(): void {
-    this.load.atlas(TEXTURES, "../../assets/atlases/main.png", "../../assets/atlases/main.json");
-    this.load.atlas(BIRD_SHEET, "../../assets/atlases/bird.png", "../../assets/atlases/bird.json");
+    this.load.atlas(TEXTURES, "./atlases/main.png", "./atlases/main.json");
+    this.load.atlas(BIRD_SHEET, "./atlases/bird.png", "./atlases/bird.json");
     this.load.on("progress", this._onFileLoadComplete, this);
     this.load.on("complete", this._onLoadComplete, this);
     this.load.start();

@@ -35,7 +35,7 @@ module.exports = () => {
         template: PATHS.html,
       }),
       new copyPlugin({
-        patterns: [{ from: path.resolve("assets"), to: path.resolve("dist/assets") }],
+        patterns: [{ from: path.resolve("src/atlases"), to: path.resolve("dist/atlases") }],
       }),
     ],
     module: {

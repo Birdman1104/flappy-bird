@@ -1,6 +1,6 @@
-import { PreloadScene } from "./scenes/preload-scene";
 import { SCENE_NAMES } from "./constants";
-import { GameScene } from "./scenes/game-scene";
+import { GameScene } from "./game-scene";
+import { PreloadScene } from "./preload-scene";
 
 export class Game extends Phaser.Game {
   public constructor(private _gameConfig: Phaser.Types.Core.GameConfig) {
