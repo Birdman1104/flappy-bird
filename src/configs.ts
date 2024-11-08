@@ -1,10 +1,10 @@
 export const CONFIGS: {
   speed: number;
-  birdGravity: number;
+  birdVelocity: number;
   birdJump: number;
 } = {
   speed: 2,
-  birdGravity: 800,
+  birdVelocity: -100,
   birdJump: 200,
 };
 

@@ -8,6 +8,7 @@ export class PreloadScene extends Phaser.Scene {
   public create(): void {
     this.load.image("bkg", "src/assets/background-day.png");
     this.load.image("bird", "src/assets/bluebird-downflap.png");
+    this.load.image("pipe", "src/assets/pipe-1.png");
 
     this.load.on("progress", this.onFileLoadComplete, this);
     this.load.on("complete", this.onLoadComplete, this);

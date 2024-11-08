@@ -12,8 +12,6 @@ export class GameScene extends Phaser.Scene {
   }
 
   private buildMainView(): void {
-    console.warn(345678);
-
     this.mainView = new MainView(this);
     this.add.existing(this.mainView);
   }
