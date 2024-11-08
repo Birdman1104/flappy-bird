@@ -1,9 +1,11 @@
 {
-  "app.js": "app.f2fa4f50df2b26920dd6.js",
+  "app.js": "app.6d182a57177fdd964709.js",
   "modules.js": "modules.99af58ec8f346e21d512.js",
-  "atlases/main.png": "atlases/main.png",
-  "atlases/main.json": "atlases/main.json",
+  "src/assets/favicon.ico": "src/assets/favicon.ico",
+  "src/assets/background-day.png": "src/assets/background-day.png",
+  "src/assets/pipe-1.png": "src/assets/pipe-1.png",
+  "src/assets/pipe-2.png": "src/assets/pipe-2.png",
+  "src/assets/message.png": "src/assets/message.png",
   "index.html": "index.html",
-  "atlases/bird.json": "atlases/bird.json",
-  "atlases/bird.png": "atlases/bird.png"
+  "src/assets/bluebird-downflap.png": "src/assets/bluebird-downflap.png"
 }
