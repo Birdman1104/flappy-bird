@@ -22,19 +22,19 @@ module.exports = {
 
       {
         selector: "variable",
-        format: ["camelCase", "UPPER_CASE"],
+        format: ["camelCase", "UPPER_CASE", "PascalCase"],
       },
       {
         selector: "parameter",
-        format: ["camelCase"],
+        format: ["camelCase", "PascalCase"],
         leadingUnderscore: "allow",
       },
 
       {
         selector: "memberLike",
         modifiers: ["private"],
-        format: ["camelCase"],
-        leadingUnderscore: "require",
+        format: ["camelCase", "PascalCase"],
+        leadingUnderscore: "allow",
       },
 
       {

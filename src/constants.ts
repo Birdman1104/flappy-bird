@@ -1,10 +1,7 @@
-export const SCENE_NAMES = {
-  preload: "PreloadScene",
-  game: "GameScene",
+export const Scenes = {
+  preload: "preloadScene",
+  game: "gameScene",
 };
-
-export const TEXTURES = "mainAtlas";
-export const BIRD_SHEET = "bird";
 
 export const STORAGE_NAME = "bestFlappyBirdScore";
 

@@ -1,18 +1,18 @@
-import { SCENE_NAMES } from "./constants";
-import { GameScene } from "./game-scene";
-import { PreloadScene } from "./preload-scene";
+import { Scenes } from "./constants";
+import { GameScene } from "./scenes/GameScene";
+import { PreloadScene } from "./scenes/PreloadScene";
 
 export class Game extends Phaser.Game {
-  public constructor(private _gameConfig: Phaser.Types.Core.GameConfig) {
-    super(_gameConfig);
+  public constructor(private gameConfig: Phaser.Types.Core.GameConfig) {
+    super(gameConfig);
 
-    this._initializeScenes();
+    this.initializeScenes();
 
-    this.scene.start(SCENE_NAMES.preload);
+    this.scene.start(Scenes.preload);
   }
 
-  private _initializeScenes(): void {
-    this.scene.add(SCENE_NAMES.preload, new PreloadScene(this._gameConfig));
-    this.scene.add(SCENE_NAMES.game, new GameScene(this._gameConfig));
+  private initializeScenes(): void {
+    this.scene.add(Scenes.preload, new PreloadScene(this.gameConfig));
+    this.scene.add(Scenes.game, new GameScene(this.gameConfig));
   }
 }
