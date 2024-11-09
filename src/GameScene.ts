@@ -16,6 +16,7 @@ export class GameScene extends Phaser.Scene {
 
   private bkgDay: Phaser.GameObjects.TileSprite;
   private bkgNight: Phaser.GameObjects.TileSprite;
+  private base: Phaser.GameObjects.TileSprite;
   private bird: Bird;
 
   private pipes: Pipes[] = [];
@@ -30,8 +31,9 @@ export class GameScene extends Phaser.Scene {
   private readonly frameTime = 1000 / 60; // 60 FPS
 
   public create(): void {
-    this.initStats();
+    // this.initStats();
     this.buildBg();
+    this.buildBase();
     this.buildBird();
     this.drawScore();
 
@@ -45,7 +47,7 @@ export class GameScene extends Phaser.Scene {
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      this.stats.update();
+      this.stats?.update();
       switch (this.state) {
         case GameState.action:
           this.actionsUpdates();
@@ -88,7 +90,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private updateBird(): void {
-    if (this.bird.y > +this.game.config.height) {
+    if (this.bird.y > 380) {
       this.updateGameState(GameState.die);
     }
     if (this.bird.y <= 0) {
@@ -99,8 +101,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   private moveBkg(): void {
-    this.bkgDay.tilePositionX += CONFIGS.speed;
-    this.bkgNight.tilePositionX += CONFIGS.speed;
+    const speed = getSpeed(this.score);
+    this.bkgDay.tilePositionX += speed * 0.8;
+    this.bkgNight.tilePositionX += speed * 0.8;
+    this.base.tilePositionX += speed;
   }
 
   private movePipes(): void {
@@ -122,8 +126,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   private dieUpdates(): void {
-    if (this.bird.y > +this.game.config.height) {
-      this.bird.y = +this.game.config.height - 5;
+    if (this.bird.y > 380) {
+      this.bird.y = 400;
       this.bird.disablePhysics();
       this.updateGameState(GameState.result);
     }
@@ -179,6 +183,11 @@ export class GameScene extends Phaser.Scene {
 
     this.bkgNight = this.add.tileSprite(256, 256, 512, 512, BKG_NIGHT);
     this.bkgNight.alpha = 0;
+  }
+
+  private buildBase(): void {
+    this.base = this.add.tileSprite(160, 460, 330, 112, TEXTURES, "base.png");
+    this.base.setDepth(4);
   }
 
   private buildBird(): void {
