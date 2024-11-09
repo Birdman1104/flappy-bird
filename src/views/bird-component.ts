@@ -8,7 +8,7 @@ export class BirdComponent extends Phaser.Physics.Arcade.Sprite {
   public constructor(public scene: Phaser.Scene) {
     super(scene, 100, 287, BIRD_SHEET);
 
-    this._initialSetup();
+    this.initialSetup();
   }
 
   public update(): void {
@@ -43,7 +43,7 @@ export class BirdComponent extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.world.enable(this);
   }
 
-  private _initialSetup(): void {
+  private initialSetup(): void {
     this.anims.create(birdAnimationConfig);
     this.play({ key: "fly", repeat: -1 });
   }

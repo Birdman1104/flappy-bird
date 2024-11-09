@@ -6,32 +6,32 @@ import { PipesComponent } from "./views/pipes-component";
 import { PopupComponent } from "./views/popup-component";
 
 export class GameScene extends Phaser.Scene {
-  private _bg: Phaser.GameObjects.TileSprite;
-  private _bird: BirdComponent;
-  private _pipes: PipesComponent;
-  private _popup: PopupComponent;
-  private _message: Phaser.GameObjects.Image;
-  private _score = 0;
-  private _bestScore = 0;
-  private _scoreText: Phaser.GameObjects.Text;
-  private _overlap: Phaser.Physics.Arcade.Collider;
-  private _state: GameState = GameState.undefined;
+  private bg: Phaser.GameObjects.TileSprite;
+  private bird: BirdComponent;
+  private pipes: PipesComponent;
+  private popup: PopupComponent;
+  private message: Phaser.GameObjects.Image;
+  private score = 0;
+  private bestScore = 0;
+  private scoreText: Phaser.GameObjects.Text;
+  private overlap: Phaser.Physics.Arcade.Collider;
+  private state: GameState = GameState.undefined;
 
   public create(): void {
-    this._buildBg();
-    this._buildBird();
-    this._drawScore();
+    this.buildBg();
+    this.buildBird();
+    this.drawScore();
 
-    this._setGameState(GameState.preAction);
+    this.setGameState(GameState.preAction);
   }
 
   public update(): void {
-    switch (this._state) {
+    switch (this.state) {
       case GameState.action:
-        this._actionsUpdates();
+        this.actionsUpdates();
         break;
       case GameState.die:
-        this._dieUpdates();
+        this.dieUpdates();
         break;
 
       default:
@@ -39,39 +39,39 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  private _onStateUpdate(): void {
-    switch (this._state) {
+  private onStateUpdate(): void {
+    switch (this.state) {
       case GameState.preAction:
-        this._reset();
+        this.reset();
         break;
       case GameState.result:
-        this._showPopup();
-        this._changeLocalStorage();
+        this.showPopup();
+        this.changeLocalStorage();
         break;
       case GameState.die:
-        this._bird.die();
+        this.bird.die();
         break;
       default:
         break;
     }
   }
 
-  private _onPointerDown(e: Phaser.Input.Pointer): void {
+  private onPointerDown(e: Phaser.Input.Pointer): void {
     if (e.wasTouch) {
       return;
     }
 
-    switch (this._state) {
+    switch (this.state) {
       case GameState.action:
-        this._bird.jump();
+        this.bird.jump();
         break;
       case GameState.preAction:
-        this._setGameState(GameState.action);
-        this._startAction();
+        this.setGameState(GameState.action);
+        this.startAction();
         break;
       case GameState.result:
-        this._popup.destroy();
-        this._setGameState(GameState.preAction);
+        this.popup.destroy();
+        this.setGameState(GameState.preAction);
         break;
 
       default:
@@ -79,122 +79,122 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  private _actionsUpdates(): void {
-    if (this._bird.y > this.game.config.height) {
-      this._setGameState(GameState.die);
+  private actionsUpdates(): void {
+    if (this.bird.y > +this.game.config.height) {
+      this.setGameState(GameState.die);
     }
 
-    if (this._bird.y <= 0) {
-      this._bird.y = 0;
-      this._bird.body.velocity.y = 0;
+    if (this.bird.y <= 0) {
+      this.bird.y = 0;
+      this.bird.body.velocity.y = 0;
     }
 
-    const speed = this._getSpeed();
+    const speed = this.getSpeed();
 
-    this._bird.update();
-    this._bg.tilePositionX += CONFIGS.speed;
-    this._pipes.move(speed);
+    this.bird.update();
+    this.bg.tilePositionX += CONFIGS.speed;
+    this.pipes.move(speed);
   }
 
-  private _dieUpdates(): void {
-    if (this._bird.y > +this.game.config.height) {
-      this._bird.y = +this.game.config.height - 5;
-      this._bird.disablePhysics();
-      this._setGameState(GameState.result);
-    }
-  }
-
-  private _setGameState(state: GameState): void {
-    if (this._state !== state) {
-      this._state = state;
-      this._onStateUpdate();
+  private dieUpdates(): void {
+    if (this.bird.y > +this.game.config.height) {
+      this.bird.y = +this.game.config.height - 5;
+      this.bird.disablePhysics();
+      this.setGameState(GameState.result);
     }
   }
 
-  private _startAction(): void {
-    this._buildPipe();
-    this._hideMessage();
-    this._bird.enablePhysics();
-    this._bird.jump();
+  private setGameState(state: GameState): void {
+    if (this.state !== state) {
+      this.state = state;
+      this.onStateUpdate();
+    }
   }
 
-  private _reset(): void {
-    this._score = 0;
-    this._updateScoreText();
-    this._pipes && this._pipes.destroy();
-    this._bird.resetPosition();
-    this._showMessage();
+  private startAction(): void {
+    this.buildPipe();
+    this.hideMessage();
+    this.bird.enablePhysics();
+    this.bird.jump();
   }
 
-  private _buildBg(): void {
-    this._bg = this.add.tileSprite(256, 256, 512, 512, TEXTURES, "bg.png");
-    this._bg.setInteractive();
-    this._bg.on("pointerdown", (e: Phaser.Input.Pointer) => this._onPointerDown(e));
+  private reset(): void {
+    this.score = 0;
+    this.updateScoreText();
+    this.pipes && this.pipes.destroy();
+    this.bird.resetPosition();
+    this.showMessage();
   }
 
-  private _buildBird(): void {
-    this.add.existing((this._bird = new BirdComponent(this)));
-    this._bird.setDepth(2);
+  private buildBg(): void {
+    this.bg = this.add.tileSprite(256, 256, 512, 512, TEXTURES, "bg.png");
+    this.bg.setInteractive();
+    this.bg.on("pointerdown", (e: Phaser.Input.Pointer) => this.onPointerDown(e));
   }
 
-  private _showPopup(): void {
-    this.add.existing((this._popup = new PopupComponent(this, this._score, this._bestScore)));
+  private buildBird(): void {
+    this.add.existing((this.bird = new BirdComponent(this)));
+    this.bird.setDepth(2);
   }
 
-  private _buildPipe(): void {
-    this.add.existing((this._pipes = new PipesComponent(this, 400, this._score)));
-    this._pipes.setDepth(1);
-    this._overlap = this.physics.add.overlap(this._bird, [...this._pipes.getPipes()], () => this._onCollision());
-    this._pipes.on("outOfScreen", () => this._destroyPipes());
+  private showPopup(): void {
+    this.add.existing((this.popup = new PopupComponent(this, this.score, this.bestScore)));
   }
 
-  private _destroyPipes(): void {
-    this._pipes.destroy();
-    this._pipes = null;
-    this._overlap.destroy();
-    this._buildPipe();
-
-    ++this._score;
-    this._updateScoreText();
+  private buildPipe(): void {
+    this.add.existing((this.pipes = new PipesComponent(this, 400, this.score)));
+    this.pipes.setDepth(1);
+    this.overlap = this.physics.add.overlap(this.bird, [...this.pipes.pipes], () => this.onCollision());
+    this.pipes.on("outOfScreen", () => this.destroyPipes());
   }
 
-  private _drawScore(): void {
-    this._score = 0;
-    this._bestScore = localStorage.getItem(STORAGE_NAME) ? +localStorage.getItem(STORAGE_NAME) : 0;
+  private destroyPipes(): void {
+    this.pipes.destroy();
+    this.pipes = null;
+    this.overlap.destroy();
+    this.buildPipe();
 
-    this._scoreText = this.add.text(10, 10, `Score - ${this._score}\nBest - ${this._bestScore}`);
-
-    this._scoreText.setDepth(3);
-    this._updateScoreText();
+    ++this.score;
+    this.updateScoreText();
   }
 
-  private _updateScoreText(): void {
-    this._scoreText.text = `Score - ${this._score}\nBest - ${this._bestScore}`;
+  private drawScore(): void {
+    this.score = 0;
+    this.bestScore = localStorage.getItem(STORAGE_NAME) ? +localStorage.getItem(STORAGE_NAME) : 0;
+
+    this.scoreText = this.add.text(10, 10, `Score - ${this.score}\nBest - ${this.bestScore}`);
+
+    this.scoreText.setDepth(3);
+    this.updateScoreText();
   }
 
-  private _showMessage(): void {
-    if (this._message) {
-      this._message.alpha = 1;
+  private updateScoreText(): void {
+    this.scoreText.text = `Score - ${this.score}\nBest - ${this.bestScore}`;
+  }
+
+  private showMessage(): void {
+    if (this.message) {
+      this.message.alpha = 1;
     } else {
       const { width: w, height: h } = this.game.config;
-      this._message = this.add.image(+w / 2, +h / 2, TEXTURES, "message.png");
+      this.message = this.add.image(+w / 2, +h / 2, TEXTURES, "message.png");
     }
   }
 
-  private _hideMessage(): void {
-    this._message.alpha = 0;
+  private hideMessage(): void {
+    this.message.alpha = 0;
   }
 
-  private _onCollision(): void {
-    this._setGameState(GameState.die);
+  private onCollision(): void {
+    this.setGameState(GameState.die);
   }
 
-  private _changeLocalStorage(): void {
-    this._bestScore = Math.max(this._score, this._bestScore);
-    localStorage.setItem(STORAGE_NAME, `${this._bestScore}`);
+  private changeLocalStorage(): void {
+    this.bestScore = Math.max(this.score, this.bestScore);
+    localStorage.setItem(STORAGE_NAME, `${this.bestScore}`);
   }
 
-  private _getSpeed(): number {
-    return CONFIGS.speed + this._score * 0.1;
+  private getSpeed(): number {
+    return CONFIGS.speed + this.score * 0.1;
   }
 }
