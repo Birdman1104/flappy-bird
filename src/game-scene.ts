@@ -6,15 +6,19 @@ import { PipesComponent } from "./views/pipes-component";
 import { PopupComponent } from "./views/popup-component";
 
 export class GameScene extends Phaser.Scene {
-  private bg: Phaser.GameObjects.TileSprite;
-  private bird: BirdComponent;
-  private pipes: PipesComponent;
-  private popup: PopupComponent;
-  private message: Phaser.GameObjects.Image;
   private score = 0;
   private bestScore = 0;
   private scoreText: Phaser.GameObjects.Text;
+
+  private bg: Phaser.GameObjects.TileSprite;
+  private bird: BirdComponent;
+
+  private pipes: PipesComponent[] = [];
+  private popup: PopupComponent;
+  private message: Phaser.GameObjects.Image;
+
   private overlap: Phaser.Physics.Arcade.Collider;
+
   private state: GameState = GameState.undefined;
 
   public create(): void {
@@ -22,7 +26,7 @@ export class GameScene extends Phaser.Scene {
     this.buildBird();
     this.drawScore();
 
-    this.setGameState(GameState.preAction);
+    this.updateGameState(GameState.preAction);
   }
 
   public update(): void {
@@ -39,7 +43,74 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  private onStateUpdate(): void {
+  private onPointerDown(e: Phaser.Input.Pointer): void {
+    if (e.wasTouch) {
+      return;
+    }
+
+    switch (this.state) {
+      case GameState.action:
+        this.bird.jump();
+        break;
+      case GameState.preAction:
+        this.updateGameState(GameState.action);
+        this.startAction();
+        break;
+      case GameState.result:
+        this.popup.destroy();
+        this.updateGameState(GameState.preAction);
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  private actionsUpdates(): void {
+    if (this.bird.y > +this.game.config.height) {
+      this.updateGameState(GameState.die);
+    }
+
+    if (this.bird.y <= 0) {
+      this.bird.y = 0;
+      this.bird.body.velocity.y = 0;
+    }
+
+    this.bird.update();
+    this.bg.tilePositionX += CONFIGS.speed;
+
+    this.movePipes();
+  }
+
+  private movePipes(): void {
+    const speed = this.getSpeed();
+    this.pipes.forEach((p, i) => {
+      p.x -= speed;
+
+      if (p.x <= -26) {
+        p.destroy();
+        this.pipes.splice(i, 1);
+        this.addPipe();
+        this.addOverlap();
+
+        ++this.score;
+        this.updateScoreText();
+      }
+    });
+  }
+
+  private dieUpdates(): void {
+    if (this.bird.y > +this.game.config.height) {
+      this.bird.y = +this.game.config.height - 5;
+      this.bird.disablePhysics();
+      this.updateGameState(GameState.result);
+    }
+  }
+
+  private updateGameState(state: GameState): void {
+    if (this.state === state) return;
+    this.state = state;
+
     switch (this.state) {
       case GameState.preAction:
         this.reset();
@@ -56,63 +127,12 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  private onPointerDown(e: Phaser.Input.Pointer): void {
-    if (e.wasTouch) {
-      return;
-    }
-
-    switch (this.state) {
-      case GameState.action:
-        this.bird.jump();
-        break;
-      case GameState.preAction:
-        this.setGameState(GameState.action);
-        this.startAction();
-        break;
-      case GameState.result:
-        this.popup.destroy();
-        this.setGameState(GameState.preAction);
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  private actionsUpdates(): void {
-    if (this.bird.y > +this.game.config.height) {
-      this.setGameState(GameState.die);
-    }
-
-    if (this.bird.y <= 0) {
-      this.bird.y = 0;
-      this.bird.body.velocity.y = 0;
-    }
-
-    const speed = this.getSpeed();
-
-    this.bird.update();
-    this.bg.tilePositionX += CONFIGS.speed;
-    this.pipes.move(speed);
-  }
-
-  private dieUpdates(): void {
-    if (this.bird.y > +this.game.config.height) {
-      this.bird.y = +this.game.config.height - 5;
-      this.bird.disablePhysics();
-      this.setGameState(GameState.result);
-    }
-  }
-
-  private setGameState(state: GameState): void {
-    if (this.state !== state) {
-      this.state = state;
-      this.onStateUpdate();
-    }
-  }
-
   private startAction(): void {
-    this.buildPipe();
+    this.addPipe();
+    this.addPipe();
+    this.addPipe();
+    this.addPipe();
+    this.addOverlap();
     this.hideMessage();
     this.bird.enablePhysics();
     this.bird.jump();
@@ -121,7 +141,8 @@ export class GameScene extends Phaser.Scene {
   private reset(): void {
     this.score = 0;
     this.updateScoreText();
-    this.pipes && this.pipes.destroy();
+    this.pipes.forEach((p) => p.destroy());
+    this.pipes = [];
     this.bird.resetPosition();
     this.showMessage();
   }
@@ -141,21 +162,21 @@ export class GameScene extends Phaser.Scene {
     this.add.existing((this.popup = new PopupComponent(this, this.score, this.bestScore)));
   }
 
-  private buildPipe(): void {
-    this.add.existing((this.pipes = new PipesComponent(this, 400, this.score)));
-    this.pipes.setDepth(1);
-    this.overlap = this.physics.add.overlap(this.bird, [...this.pipes.pipes], () => this.onCollision());
-    this.pipes.on("outOfScreen", () => this.destroyPipes());
+  private addPipe(): void {
+    const pipeX = this.pipes.length ? this.pipes[this.pipes.length - 1].x + 200 : 330;
+    const pipe = new PipesComponent(this, this.score);
+    pipe.x = pipeX;
+    this.add.existing(pipe);
+    this.pipes.push(pipe);
   }
 
   private destroyPipes(): void {
-    this.pipes.destroy();
-    this.pipes = null;
-    this.overlap.destroy();
-    this.buildPipe();
-
-    ++this.score;
-    this.updateScoreText();
+    // this.pipes.forEach((p) => p.destroy());
+    // this.pipes = [];
+    // this.overlap.destroy();
+    // // this.buildPipe();
+    // ++this.score;
+    // this.updateScoreText();
   }
 
   private drawScore(): void {
@@ -185,8 +206,14 @@ export class GameScene extends Phaser.Scene {
     this.message.alpha = 0;
   }
 
+  private addOverlap(): void {
+    const allPipes = this.pipes.map((p) => p.pipes).flat();
+    this.overlap?.destroy();
+    this.overlap = this.physics.add.overlap(this.bird, allPipes, () => this.updateGameState(GameState.die));
+  }
+
   private onCollision(): void {
-    this.setGameState(GameState.die);
+    this.updateGameState(GameState.die);
   }
 
   private changeLocalStorage(): void {
