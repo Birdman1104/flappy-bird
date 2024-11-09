@@ -1,4 +1,5 @@
 import * as Phaser from "phaser";
+import Stats from "stats.js";
 import { CONFIGS } from "./configs";
 import { BKG_DAY, BKG_NIGHT, GameState, STORAGE_NAME, TEXTURES } from "./constants";
 import { Bird } from "./views/Bird";
@@ -7,6 +8,8 @@ import { GameOverPopup } from "./views/Popup";
 import { Score } from "./views/Score";
 
 export class GameScene extends Phaser.Scene {
+  private stats: Stats;
+
   private score = 0;
   private bestScore = 0;
   private scoreText: Score;
@@ -23,7 +26,11 @@ export class GameScene extends Phaser.Scene {
 
   private state: GameState = GameState.undefined;
 
+  private accumulator = 0;
+  private readonly frameTime = 1000 / 60; // 60 FPS
+
   public create(): void {
+    this.initStats();
     this.buildBg();
     this.buildBird();
     this.drawScore();
@@ -31,17 +38,25 @@ export class GameScene extends Phaser.Scene {
     this.updateGameState(GameState.preAction);
   }
 
-  public update(): void {
-    switch (this.state) {
-      case GameState.action:
-        this.actionsUpdates();
-        break;
-      case GameState.die:
-        this.dieUpdates();
-        break;
+  public update(_time: number, dt: number): void {
+    this.accumulator += dt;
+    while (this.accumulator >= this.frameTime) {
+      this.accumulator -= this.frameTime;
 
-      default:
-        break;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.stats.update();
+      switch (this.state) {
+        case GameState.action:
+          this.actionsUpdates();
+          break;
+        case GameState.die:
+          this.dieUpdates();
+          break;
+
+        default:
+          break;
+      }
     }
   }
 
@@ -251,6 +266,13 @@ export class GameScene extends Phaser.Scene {
       yoyo: true,
       repeat: -1,
     });
+  }
+
+  private initStats(): void {
+    this.stats = new Stats();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    document.body.appendChild(this.stats.dom);
   }
 }
 
