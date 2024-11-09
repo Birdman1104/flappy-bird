@@ -5,7 +5,7 @@ export class PipesComponent extends Phaser.GameObjects.Container {
   public pipeBottom: Phaser.Physics.Arcade.Sprite;
   public pipeTop: Phaser.Physics.Arcade.Sprite;
 
-  public constructor(public scene: Phaser.Scene, private score: number) {
+  public constructor(public scene: Phaser.Scene, private score: number, private nightAlpha: number) {
     super(scene);
 
     this.setup();
@@ -20,11 +20,21 @@ export class PipesComponent extends Phaser.GameObjects.Container {
   }
 
   private setup(): void {
+    // const frame = this.isNight ? "pipe-green.png" : "pipe-red.png";
     const pipe1Y = Math.random() * 150 + 380;
-    const pipe1 = this.scene.physics.add.sprite(this.x, pipe1Y, TEXTURES, "pipe-1.png");
+    const pipe1 = this.scene.physics.add.sprite(0, pipe1Y, TEXTURES, "pipe-green.png");
 
     const pipe2Y = pipe1Y - pipe1.height - (Math.random() * 80 + 100) + this.score * 2;
-    const pipe2 = this.scene.physics.add.sprite(this.x, pipe2Y, TEXTURES, "pipe-2.png");
+    const pipe2 = this.scene.physics.add.sprite(0, pipe2Y, TEXTURES, "pipe-green.png");
+    pipe2.scaleY = -1;
+
+    const pipe1Cover = this.scene.add.sprite(0, pipe1Y, TEXTURES, "pipe-red.png");
+    const pipe2Cover = this.scene.add.sprite(0, pipe2Y, TEXTURES, "pipe-red.png");
+
+    pipe2Cover.scaleY = -1;
+
+    pipe1Cover.alpha = this.nightAlpha;
+    pipe2Cover.alpha = this.nightAlpha;
 
     pipe1.setImmovable(true);
     pipe2.setImmovable(true);
@@ -37,5 +47,8 @@ export class PipesComponent extends Phaser.GameObjects.Container {
 
     this.add(this.pipeBottom);
     this.add(this.pipeTop);
+
+    this.add(pipe1Cover);
+    this.add(pipe2Cover);
   }
 }

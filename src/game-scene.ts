@@ -126,6 +126,7 @@ export class GameScene extends Phaser.Scene {
         break;
       case GameState.die:
         this.bird.die();
+        this.stopTweens();
         break;
       case GameState.action:
         this.startDaySwitching();
@@ -173,7 +174,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private addPipe(): void {
-    const pipe = new PipesComponent(this, this.score);
+    const pipe = new PipesComponent(this, this.score, this.bkgNight.alpha);
     const pipeX = this.pipes.length
       ? this.pipes[this.pipes.length - 1].x + 200
       : +this.game.config.width + pipe.getWidth() / 2;
@@ -232,14 +233,18 @@ export class GameScene extends Phaser.Scene {
     this.bkgDay.tilePositionX = 0;
     this.bkgNight.tilePositionX = 0;
     this.bkgNight.alpha = 0;
+  }
+
+  private stopTweens(): void {
     this.tweens.killTweensOf(this.bkgNight);
+    this.tweens.killTweensOf(this.bkgDay);
   }
 
   private startDaySwitching(): void {
     this.tweens.add({
       targets: this.bkgNight,
       alpha: 1,
-      duration: 10000,
+      duration: 15000,
       yoyo: true,
       repeat: -1,
     });
