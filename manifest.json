@@ -1,11 +1,15 @@
 {
   "app.js": "app.js",
   "modules.js": "modules.js",
-  "src/assets/favicon.ico": "src/assets/favicon.ico",
+  "favicon.ico": "favicon.ico",
   "src/assets/background-day.png": "src/assets/background-day.png",
-  "src/assets/pipe-1.png": "src/assets/pipe-1.png",
-  "src/assets/pipe-2.png": "src/assets/pipe-2.png",
+  "src/assets/pipe-green.png": "src/assets/pipe-green.png",
+  "src/assets/pipe-red.png": "src/assets/pipe-red.png",
   "src/assets/message.png": "src/assets/message.png",
+  "src/assets/background-night.png": "src/assets/background-night.png",
   "index.html": "index.html",
+  "src/assets/popup.png": "src/assets/popup.png",
+  "src/assets/gameover.png": "src/assets/gameover.png",
+  "src/assets/base.png": "src/assets/base.png",
   "src/assets/bluebird-downflap.png": "src/assets/bluebird-downflap.png"
 }
