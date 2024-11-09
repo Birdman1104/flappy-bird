@@ -1,15 +1,15 @@
 {
-  "app.js": "app.js",
-  "modules.js": "modules.js",
-  "favicon.ico": "favicon.ico",
-  "src/assets/background-day.png": "src/assets/background-day.png",
-  "src/assets/pipe-green.png": "src/assets/pipe-green.png",
-  "src/assets/pipe-red.png": "src/assets/pipe-red.png",
-  "src/assets/message.png": "src/assets/message.png",
-  "src/assets/background-night.png": "src/assets/background-night.png",
+  "app.js": "app.ea7a2b825cb4441cf37d.js",
+  "modules.js": "modules.99af58ec8f346e21d512.js",
+  "atlases/main.png": "atlases/main.png",
+  "assets/bkg-day.png": "assets/bkg-day.png",
+  "atlases/main.json": "atlases/main.json",
+  "atlases/yellowbird.json": "atlases/yellowbird.json",
+  "atlases/redbird.json": "atlases/redbird.json",
   "index.html": "index.html",
-  "src/assets/popup.png": "src/assets/popup.png",
-  "src/assets/gameover.png": "src/assets/gameover.png",
-  "src/assets/base.png": "src/assets/base.png",
-  "src/assets/bluebird-downflap.png": "src/assets/bluebird-downflap.png"
+  "assets/bkg-night.png": "assets/bkg-night.png",
+  "atlases/bird.json": "atlases/bird.json",
+  "atlases/redbird.png": "atlases/redbird.png",
+  "atlases/yellowbird.png": "atlases/yellowbird.png",
+  "atlases/bird.png": "atlases/bird.png"
 }
