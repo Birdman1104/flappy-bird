@@ -1,6 +1,6 @@
 import * as Phaser from "phaser";
 import { CONFIGS } from "./configs";
-import { GameState, STORAGE_NAME, TEXTURES } from "./constants";
+import { BKG_DAY, BKG_NIGHT, GameState, STORAGE_NAME, TEXTURES } from "./constants";
 import { BirdComponent } from "./views/bird-component";
 import { PipesComponent } from "./views/pipes-component";
 import { PopupComponent } from "./views/popup-component";
@@ -10,7 +10,8 @@ export class GameScene extends Phaser.Scene {
   private bestScore = 0;
   private scoreText: Phaser.GameObjects.Text;
 
-  private bkg: Phaser.GameObjects.TileSprite;
+  private bkgDay: Phaser.GameObjects.TileSprite;
+  private bkgNight: Phaser.GameObjects.TileSprite;
   private bird: BirdComponent;
 
   private pipes: PipesComponent[] = [];
@@ -82,7 +83,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   private moveBkg(): void {
-    this.bkg.tilePositionX += CONFIGS.speed;
+    this.bkgDay.tilePositionX += CONFIGS.speed;
+    this.bkgNight.tilePositionX += CONFIGS.speed;
   }
 
   private movePipes(): void {
@@ -116,6 +118,7 @@ export class GameScene extends Phaser.Scene {
     switch (this.state) {
       case GameState.preAction:
         this.reset();
+        this.resetBkg();
         break;
       case GameState.result:
         this.showPopup();
@@ -123,6 +126,9 @@ export class GameScene extends Phaser.Scene {
         break;
       case GameState.die:
         this.bird.die();
+        break;
+      case GameState.action:
+        this.startDaySwitching();
         break;
       default:
         break;
@@ -147,9 +153,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   private buildBg(): void {
-    this.bkg = this.add.tileSprite(256, 256, 512, 512, TEXTURES, "bg.png");
-    this.bkg.setInteractive();
-    this.bkg.on("pointerdown", (e: Phaser.Input.Pointer) => this.onPointerDown(e));
+    this.bkgDay = this.add.tileSprite(256, 256, 512, 512, BKG_DAY);
+    this.bkgDay.setInteractive();
+    this.bkgDay.on("pointerdown", (e: Phaser.Input.Pointer) => this.onPointerDown(e));
+
+    this.bkgNight = this.add.tileSprite(256, 256, 512, 512, BKG_NIGHT);
+    this.bkgNight.alpha = 0;
   }
 
   private buildBird(): void {
@@ -217,6 +226,23 @@ export class GameScene extends Phaser.Scene {
   private changeLocalStorage(): void {
     this.bestScore = Math.max(this.score, this.bestScore);
     localStorage.setItem(STORAGE_NAME, `${this.bestScore}`);
+  }
+
+  private resetBkg(): void {
+    this.bkgDay.tilePositionX = 0;
+    this.bkgNight.tilePositionX = 0;
+    this.bkgNight.alpha = 0;
+    this.tweens.killTweensOf(this.bkgNight);
+  }
+
+  private startDaySwitching(): void {
+    this.tweens.add({
+      targets: this.bkgNight,
+      alpha: 1,
+      duration: 10000,
+      yoyo: true,
+      repeat: -1,
+    });
   }
 }
 
