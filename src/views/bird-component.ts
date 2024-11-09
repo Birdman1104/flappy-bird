@@ -17,7 +17,7 @@ export class BirdComponent extends Phaser.Physics.Arcade.Sprite {
   }
 
   public resetPosition(): void {
-    this.setPosition(100, 287);
+    this.setPosition(50, 302);
     this.rotation = 0;
     this.isAlive = true;
     this.play({ key: "fly", repeat: -1 });

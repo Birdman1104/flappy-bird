@@ -10,7 +10,7 @@ export class GameScene extends Phaser.Scene {
   private bestScore = 0;
   private scoreText: Phaser.GameObjects.Text;
 
-  private bg: Phaser.GameObjects.TileSprite;
+  private bkg: Phaser.GameObjects.TileSprite;
   private bird: BirdComponent;
 
   private pipes: PipesComponent[] = [];
@@ -44,9 +44,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private onPointerDown(e: Phaser.Input.Pointer): void {
-    if (e.wasTouch) {
-      return;
-    }
+    if (e.wasTouch) return;
 
     switch (this.state) {
       case GameState.action:
@@ -67,34 +65,37 @@ export class GameScene extends Phaser.Scene {
   }
 
   private actionsUpdates(): void {
+    this.updateBird();
+    this.moveBkg();
+    this.movePipes();
+  }
+
+  private updateBird(): void {
     if (this.bird.y > +this.game.config.height) {
       this.updateGameState(GameState.die);
     }
-
     if (this.bird.y <= 0) {
       this.bird.y = 0;
       this.bird.body.velocity.y = 0;
     }
-
     this.bird.update();
-    this.bg.tilePositionX += CONFIGS.speed;
+  }
 
-    this.movePipes();
+  private moveBkg(): void {
+    this.bkg.tilePositionX += CONFIGS.speed;
   }
 
   private movePipes(): void {
-    const speed = this.getSpeed();
+    const speed = getSpeed(this.score);
     this.pipes.forEach((p, i) => {
       p.x -= speed;
-
-      if (p.x <= -26) {
+      if (p.x <= -p.getWidth() / 2) {
         p.destroy();
         this.pipes.splice(i, 1);
         this.addPipe();
-        this.addOverlap();
+        this.updateOverlap();
 
-        ++this.score;
-        this.updateScoreText();
+        this.updateScoreText(this.score + 1);
       }
     });
   }
@@ -109,6 +110,7 @@ export class GameScene extends Phaser.Scene {
 
   private updateGameState(state: GameState): void {
     if (this.state === state) return;
+
     this.state = state;
 
     switch (this.state) {
@@ -131,66 +133,66 @@ export class GameScene extends Phaser.Scene {
     this.addPipe();
     this.addPipe();
     this.addPipe();
-    this.addPipe();
-    this.addOverlap();
+    this.updateOverlap();
     this.hideMessage();
     this.bird.enablePhysics();
     this.bird.jump();
   }
 
   private reset(): void {
-    this.score = 0;
-    this.updateScoreText();
-    this.pipes.forEach((p) => p.destroy());
-    this.pipes = [];
+    this.updateScoreText(0);
+    this.destroyPipes();
     this.bird.resetPosition();
     this.showMessage();
   }
 
   private buildBg(): void {
-    this.bg = this.add.tileSprite(256, 256, 512, 512, TEXTURES, "bg.png");
-    this.bg.setInteractive();
-    this.bg.on("pointerdown", (e: Phaser.Input.Pointer) => this.onPointerDown(e));
+    this.bkg = this.add.tileSprite(256, 256, 512, 512, TEXTURES, "bg.png");
+    this.bkg.setInteractive();
+    this.bkg.on("pointerdown", (e: Phaser.Input.Pointer) => this.onPointerDown(e));
   }
 
   private buildBird(): void {
-    this.add.existing((this.bird = new BirdComponent(this)));
+    this.bird = new BirdComponent(this);
     this.bird.setDepth(2);
+    this.add.existing(this.bird);
   }
 
   private showPopup(): void {
-    this.add.existing((this.popup = new PopupComponent(this, this.score, this.bestScore)));
+    this.popup = new PopupComponent(this, this.score, this.bestScore);
+    this.add.existing(this.popup);
   }
 
   private addPipe(): void {
-    const pipeX = this.pipes.length ? this.pipes[this.pipes.length - 1].x + 200 : 330;
     const pipe = new PipesComponent(this, this.score);
+    const pipeX = this.pipes.length
+      ? this.pipes[this.pipes.length - 1].x + 200
+      : +this.game.config.width + pipe.getWidth() / 2;
     pipe.x = pipeX;
     this.add.existing(pipe);
     this.pipes.push(pipe);
   }
 
   private destroyPipes(): void {
-    // this.pipes.forEach((p) => p.destroy());
-    // this.pipes = [];
-    // this.overlap.destroy();
-    // // this.buildPipe();
-    // ++this.score;
-    // this.updateScoreText();
+    this.pipes.forEach((p) => p.destroy());
+    this.pipes = [];
+    this.overlap?.destroy();
+    this.overlap = null;
   }
 
   private drawScore(): void {
     this.score = 0;
-    this.bestScore = localStorage.getItem(STORAGE_NAME) ? +localStorage.getItem(STORAGE_NAME) : 0;
 
-    this.scoreText = this.add.text(10, 10, `Score - ${this.score}\nBest - ${this.bestScore}`);
+    this.bestScore = getBestScore();
+    this.scoreText = this.add.text(10, 10, getScoreText(this.score, this.bestScore));
 
     this.scoreText.setDepth(3);
-    this.updateScoreText();
+    this.updateScoreText(0);
   }
 
-  private updateScoreText(): void {
-    this.scoreText.text = `Score - ${this.score}\nBest - ${this.bestScore}`;
+  private updateScoreText(score: number): void {
+    this.score = score;
+    this.scoreText.text = getScoreText(this.score, this.bestScore);
   }
 
   private showMessage(): void {
@@ -206,22 +208,26 @@ export class GameScene extends Phaser.Scene {
     this.message.alpha = 0;
   }
 
-  private addOverlap(): void {
+  private updateOverlap(): void {
     const allPipes = this.pipes.map((p) => p.pipes).flat();
     this.overlap?.destroy();
     this.overlap = this.physics.add.overlap(this.bird, allPipes, () => this.updateGameState(GameState.die));
-  }
-
-  private onCollision(): void {
-    this.updateGameState(GameState.die);
   }
 
   private changeLocalStorage(): void {
     this.bestScore = Math.max(this.score, this.bestScore);
     localStorage.setItem(STORAGE_NAME, `${this.bestScore}`);
   }
-
-  private getSpeed(): number {
-    return CONFIGS.speed + this.score * 0.1;
-  }
 }
+
+const getSpeed = (score: number): number => {
+  return CONFIGS.speed + score * 0.1;
+};
+
+const getBestScore = (): number => {
+  return localStorage.getItem(STORAGE_NAME) ? +localStorage.getItem(STORAGE_NAME) : 0;
+};
+
+const getScoreText = (currentScore: number, bestScore: number): string => {
+  return `Score - ${currentScore}\nBest - ${bestScore}`;
+};

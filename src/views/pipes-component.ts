@@ -15,6 +15,10 @@ export class PipesComponent extends Phaser.GameObjects.Container {
     return [this.pipeTop, this.pipeBottom];
   }
 
+  public getWidth(): number {
+    return this.pipeBottom.width;
+  }
+
   private setup(): void {
     const pipe1Y = Math.random() * 150 + 380;
     const pipe1 = this.scene.physics.add.sprite(this.x, pipe1Y, TEXTURES, "pipe-1.png");
