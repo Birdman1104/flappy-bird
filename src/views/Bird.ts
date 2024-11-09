@@ -7,7 +7,8 @@ import {
   yellowBirdAnimationConfig,
 } from "../configs";
 import { RED_BIRD_SHEET } from "../constants";
-export class BirdComponent extends Phaser.Physics.Arcade.Sprite {
+
+export class Bird extends Phaser.Physics.Arcade.Sprite {
   public isAlive = true;
   private keyIndex = 0;
 

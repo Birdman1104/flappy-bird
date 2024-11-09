@@ -1,9 +1,9 @@
 import * as Phaser from "phaser";
 import { CONFIGS } from "./configs";
 import { BKG_DAY, BKG_NIGHT, GameState, STORAGE_NAME, TEXTURES } from "./constants";
-import { BirdComponent } from "./views/bird-component";
-import { PipesComponent } from "./views/pipes-component";
-import { PopupComponent } from "./views/popup-component";
+import { Bird } from "./views/Bird";
+import { Pipes } from "./views/Pipes";
+import { GameOverPopup } from "./views/Popup";
 
 export class GameScene extends Phaser.Scene {
   private score = 0;
@@ -12,10 +12,10 @@ export class GameScene extends Phaser.Scene {
 
   private bkgDay: Phaser.GameObjects.TileSprite;
   private bkgNight: Phaser.GameObjects.TileSprite;
-  private bird: BirdComponent;
+  private bird: Bird;
 
-  private pipes: PipesComponent[] = [];
-  private popup: PopupComponent;
+  private pipes: Pipes[] = [];
+  private gameOverPopup: GameOverPopup;
   private message: Phaser.GameObjects.Image;
 
   private overlap: Phaser.Physics.Arcade.Collider;
@@ -56,7 +56,7 @@ export class GameScene extends Phaser.Scene {
         this.startAction();
         break;
       case GameState.result:
-        this.popup.destroy();
+        this.gameOverPopup.destroy();
         this.updateGameState(GameState.preAction);
         break;
 
@@ -163,18 +163,18 @@ export class GameScene extends Phaser.Scene {
   }
 
   private buildBird(): void {
-    this.bird = new BirdComponent(this);
+    this.bird = new Bird(this);
     this.bird.setDepth(2);
     this.add.existing(this.bird);
   }
 
   private showPopup(): void {
-    this.popup = new PopupComponent(this, this.score, this.bestScore);
-    this.add.existing(this.popup);
+    this.gameOverPopup = new GameOverPopup(this, this.score, this.bestScore);
+    this.add.existing(this.gameOverPopup);
   }
 
   private addPipe(): void {
-    const pipe = new PipesComponent(this, this.score, this.bkgNight.alpha);
+    const pipe = new Pipes(this, this.score, this.bkgNight.alpha);
     const pipeX = this.pipes.length
       ? this.pipes[this.pipes.length - 1].x + 200
       : +this.game.config.width + pipe.getWidth() / 2;

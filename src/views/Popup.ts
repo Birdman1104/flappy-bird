@@ -1,12 +1,13 @@
 import * as Phaser from "phaser";
 import { TEXTURES } from "../constants";
 
-export class PopupComponent extends Phaser.GameObjects.Container {
+export class GameOverPopup extends Phaser.GameObjects.Container {
   private bg: Phaser.GameObjects.Image;
   private gameOver: Phaser.GameObjects.Image;
   private playerScoreText: Phaser.GameObjects.Text;
   private bestScoreText: Phaser.GameObjects.Text;
   private proposal: Phaser.GameObjects.Text;
+
   public constructor(public scene: Phaser.Scene, private score: number, private bestScore: number) {
     super(scene);
 

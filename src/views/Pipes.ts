@@ -1,7 +1,7 @@
 import * as Phaser from "phaser";
 import { TEXTURES } from "../constants";
 
-export class PipesComponent extends Phaser.GameObjects.Container {
+export class Pipes extends Phaser.GameObjects.Container {
   public pipeBottom: Phaser.Physics.Arcade.Sprite;
   public pipeTop: Phaser.Physics.Arcade.Sprite;
 
