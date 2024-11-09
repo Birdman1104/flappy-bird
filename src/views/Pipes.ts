@@ -5,6 +5,8 @@ export class Pipes extends Phaser.GameObjects.Container {
   public pipeBottom: Phaser.Physics.Arcade.Sprite;
   public pipeTop: Phaser.Physics.Arcade.Sprite;
 
+  public isScored = false;
+
   public constructor(public scene: Phaser.Scene, private score: number, private nightAlpha: number) {
     super(scene);
 

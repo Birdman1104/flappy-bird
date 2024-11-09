@@ -11,7 +11,7 @@ export class GameScene extends Phaser.Scene {
   private stats: Stats;
 
   private score = 0;
-  private bestScore = 0;
+  private bestScore = getBestScore();
   private scoreText: Score;
 
   private bkgDay: Phaser.GameObjects.TileSprite;
@@ -107,13 +107,16 @@ export class GameScene extends Phaser.Scene {
     const speed = getSpeed(this.score);
     this.pipes.forEach((p) => {
       p.x -= speed;
+      if (p.x <= this.bird.x && !p.isScored) {
+        p.isScored = true;
+        this.updateScoreText(++this.score);
+      }
+
       if (p.x <= -p.getWidth() / 2) {
         p.destroy();
         this.pipes.shift();
         this.addPipe();
         this.updateOverlap();
-
-        this.updateScoreText(this.score + 1);
       }
     });
   }
@@ -208,8 +211,6 @@ export class GameScene extends Phaser.Scene {
 
   private drawScore(): void {
     this.score = 0;
-
-    this.bestScore = getBestScore();
 
     this.scoreText = new Score(this);
     this.scoreText.setDepth(3);
