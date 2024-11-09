@@ -66,8 +66,8 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  private onPointerDown(e: Phaser.Input.Pointer): void {
-    if (e.wasTouch) return;
+  private onPointerDown(_e: Phaser.Input.Pointer): void {
+    // if (e.wasTouch) return;
 
     switch (this.state) {
       case GameState.action:
