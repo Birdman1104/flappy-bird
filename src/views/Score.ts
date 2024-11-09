@@ -14,7 +14,10 @@ export class Score extends Phaser.GameObjects.Container {
 
     const scoreString = score.toString();
     scoreString.split("").forEach((number, index) => {
-      const numberImage = this.scene.add.image(index * 20, 0, TEXTURES, `${number}.png`);
+      const numberImage = this.scene.add.image(0, 0, TEXTURES, `${number}.png`);
+      numberImage.setOrigin(0.5, 0.5);
+      const x = (index - Math.floor(scoreString.length / 2)) * numberImage.width;
+      numberImage.setPosition(x, 0);
       this.add(numberImage);
       this.numbers.push(numberImage);
     });
