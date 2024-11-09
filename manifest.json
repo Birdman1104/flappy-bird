@@ -1,7 +1,12 @@
 {
-  "app.js": "app.eae425e1c229a7721649.js",
+  "app.js": "app.2c95f561b8428ad2580c.js",
   "modules.js": "modules.54a05e80ad9fdf3a2812.js",
+  "sounds/swoosh.wav": "sounds/swoosh.wav",
+  "sounds/die.wav": "sounds/die.wav",
+  "sounds/point.wav": "sounds/point.wav",
+  "sounds/hit.wav": "sounds/hit.wav",
   "atlases/main.png": "atlases/main.png",
+  "sounds/wing.wav": "sounds/wing.wav",
   "assets/bkg-day.png": "assets/bkg-day.png",
   "atlases/main.json": "atlases/main.json",
   "atlases/yellowbird.json": "atlases/yellowbird.json",
