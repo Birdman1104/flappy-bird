@@ -4,11 +4,12 @@ import { BKG_DAY, BKG_NIGHT, GameState, STORAGE_NAME, TEXTURES } from "./constan
 import { Bird } from "./views/Bird";
 import { Pipes } from "./views/Pipes";
 import { GameOverPopup } from "./views/Popup";
+import { Score } from "./views/Score";
 
 export class GameScene extends Phaser.Scene {
   private score = 0;
   private bestScore = 0;
-  private scoreText: Phaser.GameObjects.Text;
+  private scoreText: Score;
 
   private bkgDay: Phaser.GameObjects.TileSprite;
   private bkgNight: Phaser.GameObjects.TileSprite;
@@ -89,11 +90,11 @@ export class GameScene extends Phaser.Scene {
 
   private movePipes(): void {
     const speed = getSpeed(this.score);
-    this.pipes.forEach((p, i) => {
+    this.pipes.forEach((p) => {
       p.x -= speed;
       if (p.x <= -p.getWidth() / 2) {
         p.destroy();
-        this.pipes.splice(i, 1);
+        this.pipes.shift();
         this.addPipe();
         this.updateOverlap();
 
@@ -194,15 +195,17 @@ export class GameScene extends Phaser.Scene {
     this.score = 0;
 
     this.bestScore = getBestScore();
-    this.scoreText = this.add.text(10, 10, getScoreText(this.score, this.bestScore));
 
+    this.scoreText = new Score(this);
     this.scoreText.setDepth(3);
-    this.updateScoreText(0);
+    this.scoreText.x = +this.game.config.width / 2;
+    this.scoreText.y = 50;
+    this.add.existing(this.scoreText);
   }
 
   private updateScoreText(score: number): void {
     this.score = score;
-    this.scoreText.text = getScoreText(this.score, this.bestScore);
+    this.scoreText.updateScore(this.score);
   }
 
   private showMessage(): void {
@@ -259,6 +262,6 @@ const getBestScore = (): number => {
   return localStorage.getItem(STORAGE_NAME) ? +localStorage.getItem(STORAGE_NAME) : 0;
 };
 
-const getScoreText = (currentScore: number, bestScore: number): string => {
-  return `Score - ${currentScore}\nBest - ${bestScore}`;
-};
+// const getScoreText = (currentScore: number, bestScore: number): string => {
+//   return `Score - ${currentScore}\nBest - ${bestScore}`;
+// };
