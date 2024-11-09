@@ -4,7 +4,9 @@ export const SCENE_NAMES = {
 };
 
 export const TEXTURES = "mainAtlas";
-export const BIRD_SHEET = "bird";
+export const BLUE_BIRD_SHEET = "bird";
+export const RED_BIRD_SHEET = "redbird";
+export const YELLOW_BIRD_SHEET = "yellowbird";
 
 export const STORAGE_NAME = "bestFlappyBirdScore";
 

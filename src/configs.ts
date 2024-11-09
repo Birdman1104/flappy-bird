@@ -1,5 +1,5 @@
 import * as Phaser from "phaser";
-import { BIRD_SHEET } from "./constants";
+import { BLUE_BIRD_SHEET, RED_BIRD_SHEET, YELLOW_BIRD_SHEET } from "./constants";
 
 export const CONFIGS: {
   speed: number;
@@ -11,9 +11,25 @@ export const CONFIGS: {
   birdJump: 200,
 };
 
-export const birdAnimationConfig: Phaser.Types.Animations.Animation = {
-  key: "fly",
-  frames: BIRD_SHEET,
+export const birdKeys = ["blue", "red", "yellow"];
+
+export const blueBirdAnimationConfig: Phaser.Types.Animations.Animation = {
+  key: birdKeys[0],
+  frames: BLUE_BIRD_SHEET,
+  frameRate: 12,
+  repeat: -1,
+};
+
+export const redBirdAnimationConfig: Phaser.Types.Animations.Animation = {
+  key: birdKeys[1],
+  frames: RED_BIRD_SHEET,
+  frameRate: 12,
+  repeat: -1,
+};
+
+export const yellowBirdAnimationConfig: Phaser.Types.Animations.Animation = {
+  key: birdKeys[2],
+  frames: YELLOW_BIRD_SHEET,
   frameRate: 12,
   repeat: -1,
 };

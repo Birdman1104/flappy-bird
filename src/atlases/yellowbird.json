@@ -1,0 +1,90 @@
+{
+  "frames": [
+    {
+      "filename": "yellowbird-0.png",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 34,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 34,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 34,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "yellowbird-1.png",
+      "frame": {
+        "x": 34,
+        "y": 0,
+        "w": 34,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 34,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 34,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "yellowbird-2.png",
+      "frame": {
+        "x": 68,
+        "y": 0,
+        "w": 34,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 34,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 34,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  ],
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "yellowbird.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 102,
+      "h": 24
+    },
+    "scale": 1
+  }
+}

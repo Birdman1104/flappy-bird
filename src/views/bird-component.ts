@@ -1,12 +1,20 @@
 import * as Phaser from "phaser";
-import { birdAnimationConfig, CONFIGS } from "../configs";
-import { BIRD_SHEET } from "../constants";
-
+import {
+  birdKeys,
+  blueBirdAnimationConfig,
+  CONFIGS,
+  redBirdAnimationConfig,
+  yellowBirdAnimationConfig,
+} from "../configs";
+import { RED_BIRD_SHEET } from "../constants";
 export class BirdComponent extends Phaser.Physics.Arcade.Sprite {
   public isAlive = true;
+  private keyIndex = 0;
+
+  private physicsEnabled = false;
 
   public constructor(public scene: Phaser.Scene) {
-    super(scene, 100, 287, BIRD_SHEET);
+    super(scene, 100, 287, RED_BIRD_SHEET);
 
     this.initialSetup();
   }
@@ -20,7 +28,7 @@ export class BirdComponent extends Phaser.Physics.Arcade.Sprite {
     this.setPosition(50, 302);
     this.rotation = 0;
     this.isAlive = true;
-    this.play({ key: "fly", repeat: -1 });
+    this.play({ key: birdKeys[this.keyIndex], repeat: -1 });
   }
 
   public jump(): void {
@@ -36,15 +44,32 @@ export class BirdComponent extends Phaser.Physics.Arcade.Sprite {
   }
 
   public disablePhysics(): void {
+    this.physicsEnabled = false;
     this.scene.physics.world.disable(this);
   }
 
   public enablePhysics(): void {
+    this.physicsEnabled = true;
     this.scene.physics.world.enable(this);
   }
 
   private initialSetup(): void {
-    this.anims.create(birdAnimationConfig);
-    this.play({ key: "fly", repeat: -1 });
+    this.createAnimations();
+    this.play({ key: birdKeys[this.keyIndex], repeat: -1 });
+    this.setInteractive();
+    this.on("pointerdown", (e: Phaser.Input.Pointer) => this.onPointerDown(e));
+  }
+
+  private createAnimations(): void {
+    [blueBirdAnimationConfig, redBirdAnimationConfig, yellowBirdAnimationConfig].forEach((config) =>
+      this.anims.create(config)
+    );
+  }
+
+  private onPointerDown(e: Phaser.Input.Pointer): void {
+    if (!this.isAlive || e.wasTouch || this.physicsEnabled) return;
+
+    this.keyIndex = (this.keyIndex + 1) % birdKeys.length;
+    this.play({ key: birdKeys[this.keyIndex], repeat: -1 });
   }
 }
