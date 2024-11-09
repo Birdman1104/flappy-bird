@@ -38,6 +38,7 @@ module.exports = () => {
         patterns: [
           { from: path.resolve("src/atlases"), to: path.resolve("dist/atlases") },
           { from: path.resolve("src/assets"), to: path.resolve("dist/assets") },
+          { from: path.resolve("src/sounds"), to: path.resolve("dist/sounds") },
         ],
       }),
     ],

@@ -1,5 +1,6 @@
 import * as Phaser from "phaser";
 import Stats from "stats.js";
+import { SoundController } from "./SoundController";
 import { CONFIGS } from "./configs";
 import { BKG_DAY, BKG_NIGHT, GameState, STORAGE_NAME, TEXTURES } from "./constants";
 import { Bird } from "./views/Bird";
@@ -27,10 +28,13 @@ export class GameScene extends Phaser.Scene {
 
   private state: GameState = GameState.undefined;
 
+  private soundController: SoundController;
+
   private accumulator = 0;
   private readonly frameTime = 1000 / 60; // 60 FPS
 
   public create(): void {
+    this.soundController = new SoundController(this);
     // this.initStats();
     this.buildBg();
     this.buildBase();
@@ -67,10 +71,12 @@ export class GameScene extends Phaser.Scene {
 
     switch (this.state) {
       case GameState.action:
+        this.soundController.playWing();
         this.bird.jump();
         break;
       case GameState.preAction:
         this.updateGameState(GameState.action);
+        this.soundController.playWing();
         this.startAction();
         break;
       case GameState.result:
@@ -148,6 +154,8 @@ export class GameScene extends Phaser.Scene {
         this.changeLocalStorage();
         break;
       case GameState.die:
+        this.soundController.playHit();
+        this.soundController.playDie();
         this.bird.die();
         this.stopTweens();
         break;
@@ -229,6 +237,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private updateScoreText(score: number): void {
+    score !== 0 && this.soundController.playPoint();
     this.score = score;
     this.scoreText.updateScore(this.score);
   }
