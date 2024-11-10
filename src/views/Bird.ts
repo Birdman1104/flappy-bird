@@ -12,8 +12,6 @@ export class Bird extends Phaser.Physics.Arcade.Sprite {
   public isAlive = true;
   private keyIndex = 0;
 
-  private physicsEnabled = false;
-
   public constructor(public scene: Phaser.Scene) {
     super(scene, 100, 287, RED_BIRD_SHEET);
 
@@ -27,6 +25,7 @@ export class Bird extends Phaser.Physics.Arcade.Sprite {
 
   public resetPosition(): void {
     this.setPosition(50, 302);
+    this.setInteractive();
     this.rotation = 0;
     this.isAlive = true;
     this.play({ key: birdKeys[this.keyIndex], repeat: -1 });
@@ -45,12 +44,12 @@ export class Bird extends Phaser.Physics.Arcade.Sprite {
   }
 
   public disablePhysics(): void {
-    this.physicsEnabled = false;
+    this.disableInteractive();
     this.scene.physics.world.disable(this);
   }
 
   public enablePhysics(): void {
-    this.physicsEnabled = true;
+    this.disableInteractive();
     this.scene.physics.world.enable(this);
   }
 
@@ -58,7 +57,7 @@ export class Bird extends Phaser.Physics.Arcade.Sprite {
     this.createAnimations();
     this.play({ key: birdKeys[this.keyIndex], repeat: -1 });
     this.setInteractive();
-    this.on("pointerdown", (e: Phaser.Input.Pointer) => this.onPointerDown(e));
+    this.on("pointerdown", () => this.onPointerDown());
   }
 
   private createAnimations(): void {
@@ -67,8 +66,8 @@ export class Bird extends Phaser.Physics.Arcade.Sprite {
     );
   }
 
-  private onPointerDown(e: Phaser.Input.Pointer): void {
-    if (!this.isAlive || e.wasTouch || this.physicsEnabled) return;
+  private onPointerDown(): void {
+    if (!this.isAlive) return;
 
     this.keyIndex = (this.keyIndex + 1) % birdKeys.length;
     this.play({ key: birdKeys[this.keyIndex], repeat: -1 });
