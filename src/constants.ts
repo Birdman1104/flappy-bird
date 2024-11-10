@@ -3,9 +3,11 @@ export const SCENE_NAMES = {
   game: "GameScene",
 };
 
-export const TEXTURES = "main";
 export const BKG_DAY = "bkg-day";
 export const BKG_NIGHT = "bkg-night";
+export const BASE = "base";
+
+export const TEXTURES = "main";
 export const BLUE_BIRD_SHEET = "bird";
 export const RED_BIRD_SHEET = "redbird";
 export const YELLOW_BIRD_SHEET = "yellowbird";

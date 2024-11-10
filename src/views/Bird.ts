@@ -31,12 +31,13 @@ export class Bird extends Phaser.Physics.Arcade.Sprite {
     this.play({ key: birdKeys[this.keyIndex], repeat: -1 });
   }
 
-  public jump(): void {
+  public jump(velocity = -CONFIGS.birdJump): void {
     this.rotation = -Math.PI / 4;
-    this.body.velocity.y = -CONFIGS.birdJump;
+    this.body.velocity.y = velocity;
   }
 
   public die(): void {
+    this.jump(-CONFIGS.birdJump);
     this.isAlive = false;
     this.rotation = Math.PI / 4;
 

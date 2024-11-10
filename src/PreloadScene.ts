@@ -1,5 +1,6 @@
 import * as Phaser from "phaser";
 import {
+  BASE,
   BKG_DAY,
   BKG_NIGHT,
   BLUE_BIRD_SHEET,
@@ -18,6 +19,7 @@ export class PreloadScene extends Phaser.Scene {
   public create(): void {
     this.load.image(BKG_DAY, "./assets/bkg-day.png");
     this.load.image(BKG_NIGHT, "./assets/bkg-night.png");
+    this.load.image(BASE, "./assets/base.png");
 
     [TEXTURES, BLUE_BIRD_SHEET, RED_BIRD_SHEET, YELLOW_BIRD_SHEET].forEach((key) => {
       this.load.atlas(key, `./atlases/${key}.png`, `./atlases/${key}.json`);

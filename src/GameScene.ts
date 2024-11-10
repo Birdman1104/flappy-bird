@@ -1,8 +1,8 @@
 import * as Phaser from "phaser";
 import Stats from "stats.js";
 import { SoundController } from "./SoundController";
-import { CONFIGS } from "./configs";
-import { BKG_DAY, BKG_NIGHT, GameState, STORAGE_NAME, TEXTURES } from "./constants";
+import { getBestScore, getSpeed, updateBestScore } from "./Utils";
+import { BASE, BKG_DAY, BKG_NIGHT, GameState, TEXTURES } from "./constants";
 import { Bird } from "./views/Bird";
 import { Pipes } from "./views/Pipes";
 import { GameOverPopup } from "./views/Popup";
@@ -15,6 +15,7 @@ export class GameScene extends Phaser.Scene {
   private bestScore = getBestScore();
   private scoreText: Score;
 
+  private flash: Phaser.GameObjects.Graphics;
   private bkgDay: Phaser.GameObjects.TileSprite;
   private bkgNight: Phaser.GameObjects.TileSprite;
   private base: Phaser.GameObjects.TileSprite;
@@ -35,11 +36,12 @@ export class GameScene extends Phaser.Scene {
 
   public create(): void {
     this.soundController = new SoundController(this);
-    // this.initStats();
+    this.initStats();
     this.buildBg();
     this.buildBase();
     this.buildBird();
     this.drawScore();
+    this.drawFlash();
 
     this.updateGameState(GameState.preAction);
   }
@@ -67,8 +69,6 @@ export class GameScene extends Phaser.Scene {
   }
 
   private onPointerDown(_e: Phaser.Input.Pointer): void {
-    // if (e.wasTouch) return;
-
     switch (this.state) {
       case GameState.action:
         this.soundController.playWing();
@@ -157,6 +157,7 @@ export class GameScene extends Phaser.Scene {
         this.soundController.playHit();
         this.soundController.playDie();
         this.bird.die();
+        this.flashScreen();
         this.stopTweens();
         break;
       case GameState.action:
@@ -186,7 +187,6 @@ export class GameScene extends Phaser.Scene {
 
   private buildBg(): void {
     this.bkgDay = this.add.tileSprite(256, 256, 512, 512, BKG_DAY);
-    this.bkgDay.setInteractive();
     this.bkgDay.on("pointerdown", (e: Phaser.Input.Pointer) => this.onPointerDown(e));
 
     this.bkgNight = this.add.tileSprite(256, 256, 512, 512, BKG_NIGHT);
@@ -194,7 +194,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private buildBase(): void {
-    this.base = this.add.tileSprite(160, 460, 330, 112, TEXTURES, "base.png");
+    this.base = this.add.tileSprite(160, 460, 330, 112, BASE);
     this.base.setDepth(4);
   }
 
@@ -236,6 +236,25 @@ export class GameScene extends Phaser.Scene {
     this.add.existing(this.scoreText);
   }
 
+  private drawFlash(): void {
+    this.flash = this.add.graphics();
+    this.flash.fillStyle(0xffffff, 1);
+    this.flash.fillRect(0, 0, +this.game.config.width, +this.game.config.height);
+    this.flash.setDepth(5);
+    this.flash.setInteractive();
+    this.tweens.add({
+      targets: this.flash,
+      alpha: 0,
+      duration: 1000,
+      ease: "Linear",
+      repeat: 0,
+      onComplete: () => {
+        this.flash.disableInteractive();
+        this.bkgDay.setInteractive();
+      },
+    });
+  }
+
   private updateScoreText(score: number): void {
     score !== 0 && this.soundController.playPoint();
     this.score = score;
@@ -263,7 +282,7 @@ export class GameScene extends Phaser.Scene {
 
   private changeLocalStorage(): void {
     this.bestScore = Math.max(this.score, this.bestScore);
-    localStorage.setItem(STORAGE_NAME, `${this.bestScore}`);
+    updateBestScore(this.bestScore);
   }
 
   private resetBkg(): void {
@@ -275,6 +294,22 @@ export class GameScene extends Phaser.Scene {
   private stopTweens(): void {
     this.tweens.killTweensOf(this.bkgNight);
     this.tweens.killTweensOf(this.bkgDay);
+  }
+
+  private flashScreen(): void {
+    this.tweens.add({
+      targets: this.flash,
+      alpha: 0.7,
+      duration: 200,
+      yoyo: true,
+      ease: Phaser.Math.Easing.Sine.InOut,
+      repeat: 0,
+      onComplete: () => {
+        this.flash.alpha = 0;
+      },
+    });
+    // this.flash.alpha = 1;
+    // this.flash.setInteractive();
   }
 
   private startDaySwitching(): void {
@@ -294,15 +329,3 @@ export class GameScene extends Phaser.Scene {
     document.body.appendChild(this.stats.dom);
   }
 }
-
-const getSpeed = (score: number): number => {
-  return CONFIGS.speed + score * 0.1;
-};
-
-const getBestScore = (): number => {
-  return localStorage.getItem(STORAGE_NAME) ? +localStorage.getItem(STORAGE_NAME) : 0;
-};
-
-// const getScoreText = (currentScore: number, bestScore: number): string => {
-//   return `Score - ${currentScore}\nBest - ${bestScore}`;
-// };
