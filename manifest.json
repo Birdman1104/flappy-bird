@@ -1,5 +1,5 @@
 {
-  "app.js": "app.eb2b4062296f65cbd78a.js",
+  "app.js": "app.656c5145f412c7185940.js",
   "modules.js": "modules.54a05e80ad9fdf3a2812.js",
   "sounds/swoosh.wav": "sounds/swoosh.wav",
   "sounds/die.wav": "sounds/die.wav",
@@ -16,5 +16,6 @@
   "index.html": "index.html",
   "atlases/redbird.png": "atlases/redbird.png",
   "atlases/yellowbird.png": "atlases/yellowbird.png",
-  "atlases/bird.png": "atlases/bird.png"
+  "atlases/bird.png": "atlases/bird.png",
+  "assets/base.png": "assets/base.png"
 }
