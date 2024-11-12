@@ -11,6 +11,8 @@ import { Score } from "./views/Score";
 export class GameScene extends Phaser.Scene {
   private stats: Stats;
 
+  private spaceKey: Phaser.Input.Keyboard.Key;
+
   private score = 0;
   private bestScore = getBestScore();
   private scoreText: Score;
@@ -36,7 +38,9 @@ export class GameScene extends Phaser.Scene {
 
   public create(): void {
     this.soundController = new SoundController(this);
-    this.initStats();
+
+    this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    // this.initStats();
     this.buildBg();
     this.buildBase();
     this.buildBird();
@@ -51,9 +55,14 @@ export class GameScene extends Phaser.Scene {
     while (this.accumulator >= this.frameTime) {
       this.accumulator -= this.frameTime;
 
+      if (Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
+        this.onInputDown();
+      }
+
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       this.stats?.update();
+
       switch (this.state) {
         case GameState.action:
           this.actionsUpdates();
@@ -68,7 +77,7 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  private onPointerDown(_e: Phaser.Input.Pointer): void {
+  private onInputDown(): void {
     switch (this.state) {
       case GameState.action:
         this.soundController.playWing();
@@ -187,7 +196,7 @@ export class GameScene extends Phaser.Scene {
 
   private buildBg(): void {
     this.bkgDay = this.add.tileSprite(256, 256, 512, 512, BKG_DAY);
-    this.bkgDay.on("pointerdown", (e: Phaser.Input.Pointer) => this.onPointerDown(e));
+    this.bkgDay.on("pointerdown", () => this.onInputDown());
 
     this.bkgNight = this.add.tileSprite(256, 256, 512, 512, BKG_NIGHT);
     this.bkgNight.alpha = 0;
