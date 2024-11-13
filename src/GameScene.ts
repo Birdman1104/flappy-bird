@@ -3,7 +3,7 @@ import * as Phaser from "phaser";
 import Stats from "stats.js";
 import { SoundController } from "./SoundController";
 import { getBestScore, getSpeed, updateBestScore } from "./Utils";
-import { BASE, BKG_DAY, BKG_NIGHT, GameState, TEXTURES } from "./constants";
+import { BASE, BKG_DAY, BKG_NIGHT, GameState, MESSAGE } from "./constants";
 import { Bird } from "./views/Bird";
 import { Pipes } from "./views/Pipes";
 import { GameOverPopup } from "./views/Popup";
@@ -21,14 +21,14 @@ export class GameScene extends PhaserDoms.Scene {
   // private flash: Phaser.GameObjects.Graphics;
   private bkgDay: PhaserDoms.GameObjects.Image;
   private bkgNight: PhaserDoms.GameObjects.Image;
-  private base: PhaserDoms.GameObjects.Sprite;
+  private base: PhaserDoms.GameObjects.Image;
   private bird: Bird;
 
   private pipes: Pipes[] = [];
   private gameOverPopup: GameOverPopup;
-  private message: PhaserDoms.GameObjects.Sprite;
+  private message: PhaserDoms.GameObjects.Image;
 
-  // private overlap: Phaser.Physics.Arcade.Collider;
+  private overlap: Phaser.Physics.Arcade.Collider;
 
   private state: GameState = GameState.undefined;
 
@@ -196,15 +196,15 @@ export class GameScene extends PhaserDoms.Scene {
   }
 
   private buildBg(): void {
-    this.bkgDay = this.add.sprite(256, 256, BKG_DAY);
+    this.bkgDay = this.add.existing(new PhaserDoms.GameObjects.Image(this, 256, 256, BKG_DAY));
     this.bkgDay.on("pointerdown", () => this.onInputDown());
 
-    this.bkgNight = this.add.tileSprite(256, 256, 512, 512, BKG_NIGHT);
+    this.bkgNight = this.add.existing(new PhaserDoms.GameObjects.Image(this, 256, 256, BKG_NIGHT));
     this.bkgNight.alpha = 0;
   }
 
   private buildBase(): void {
-    this.base = this.add.tileSprite(160, 460, 330, 112, BASE);
+    this.base = this.add.existing(new PhaserDoms.GameObjects.Image(this, 256, 256, BASE));
     this.base.setDepth(4);
   }
 
@@ -232,8 +232,8 @@ export class GameScene extends PhaserDoms.Scene {
   private destroyPipes(): void {
     this.pipes.forEach((p) => p.destroy());
     this.pipes = [];
-    // this.overlap?.destroy();
-    // this.overlap = null;
+    this.overlap?.destroy();
+    this.overlap = null;
   }
 
   private drawScore(): void {
@@ -247,22 +247,22 @@ export class GameScene extends PhaserDoms.Scene {
   }
 
   private drawFlash(): void {
-    this.flash = this.add.graphics();
-    this.flash.fillStyle(0xffffff, 1);
-    this.flash.fillRect(0, 0, +this.game.config.width, +this.game.config.height);
-    this.flash.setDepth(5);
-    this.flash.setInteractive();
-    this.tweens.add({
-      targets: this.flash,
-      alpha: 0,
-      duration: 1000,
-      ease: "Linear",
-      repeat: 0,
-      onComplete: () => {
-        // this.flash.disableInteractive();
-        this.bkgDay.setInteractive();
-      },
-    });
+    // this.flash = this.add.graphics();
+    // this.flash.fillStyle(0xffffff, 1);
+    // this.flash.fillRect(0, 0, +this.game.config.width, +this.game.config.height);
+    // this.flash.setDepth(5);
+    // this.flash.setInteractive();
+    // this.tweens.add({
+    //   targets: this.flash,
+    //   alpha: 0,
+    //   duration: 1000,
+    //   ease: "Linear",
+    //   repeat: 0,
+    //   onComplete: () => {
+    //     // this.flash.disableInteractive();
+    //     this.bkgDay.setInteractive();
+    //   },
+    // });
   }
 
   private updateScoreText(score: number): void {
@@ -276,7 +276,7 @@ export class GameScene extends PhaserDoms.Scene {
       this.message.alpha = 1;
     } else {
       const { width: w, height: h } = this.game.config;
-      this.message = this.add.image(+w / 2, +h / 2, TEXTURES, "message.png");
+      this.message = this.add.existing(new PhaserDoms.GameObjects.Image(this, +w / 2, +h / 2, MESSAGE));
     }
   }
 
@@ -285,9 +285,9 @@ export class GameScene extends PhaserDoms.Scene {
   }
 
   private updateOverlap(): void {
-    // const allPipes = this.pipes.map((p) => p.pipes).flat();
-    // this.overlap?.destroy();
-    // this.overlap = this.physics.add.overlap(this.bird, allPipes, () => this.updateGameState(GameState.die));
+    const allPipes = this.pipes.map((p) => p.pipes).flat();
+    this.overlap?.destroy();
+    this.overlap = this.physics.add.overlap(this.bird, allPipes, () => this.updateGameState(GameState.die));
   }
 
   private changeLocalStorage(): void {
@@ -296,8 +296,8 @@ export class GameScene extends PhaserDoms.Scene {
   }
 
   private resetBkg(): void {
-    this.bkgDay.tilePositionX = 0;
-    this.bkgNight.tilePositionX = 0;
+    // this.bkgDay.tilePositionX = 0;
+    // this.bkgNight.tilePositionX = 0;
     this.bkgNight.alpha = 0;
   }
 
@@ -307,17 +307,17 @@ export class GameScene extends PhaserDoms.Scene {
   }
 
   private flashScreen(): void {
-    this.tweens.add({
-      targets: this.flash,
-      alpha: 0.7,
-      duration: 200,
-      yoyo: true,
-      ease: Phaser.Math.Easing.Sine.InOut,
-      repeat: 0,
-      onComplete: () => {
-        this.flash.alpha = 0;
-      },
-    });
+    // this.tweens.add({
+    //   targets: this.flash,
+    //   alpha: 0.7,
+    //   duration: 200,
+    //   yoyo: true,
+    //   ease: Phaser.Math.Easing.Sine.InOut,
+    //   repeat: 0,
+    //   onComplete: () => {
+    //     this.flash.alpha = 0;
+    //   },
+    // });
     // this.flash.alpha = 1;
     // this.flash.setInteractive();
   }

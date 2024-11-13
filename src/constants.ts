@@ -6,6 +6,7 @@ export const SCENE_NAMES = {
 export const BKG_DAY = "bkg-day";
 export const BKG_NIGHT = "bkg-night";
 export const BASE = "base";
+export const MESSAGE = "message";
 
 export const TEXTURES = "main";
 export const BLUE_BIRD_SHEET = "bird";

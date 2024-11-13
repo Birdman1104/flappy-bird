@@ -36,6 +36,6 @@
   },
   "dependencies": {
     "@rollinsafary/phaser3-doms-plugin": "^0.0.3",
-    "phaser": "^3.55.2"
+    "phaser": "^3.60.0"
   }
 }

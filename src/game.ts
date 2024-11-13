@@ -7,7 +7,6 @@ export class Game extends Phaser.Game {
     super(gameConfig);
 
     this.initializeScenes();
-
     this.scene.start(SCENE_NAMES.preload);
   }
 

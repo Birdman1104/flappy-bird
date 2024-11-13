@@ -1,9 +1,10 @@
-import * as Phaser from "phaser";
+import PhaserDoms from "@rollinsafary/phaser3-doms-plugin";
 import {
   BASE,
   BKG_DAY,
   BKG_NIGHT,
   BLUE_BIRD_SHEET,
+  MESSAGE,
   RED_BIRD_SHEET,
   SCENE_NAMES,
   SOUNDS,
@@ -11,7 +12,7 @@ import {
   YELLOW_BIRD_SHEET,
 } from "./constants";
 
-export class PreloadScene extends Phaser.Scene {
+export class PreloadScene extends PhaserDoms.Scene {
   public preload(): void {
     //
   }
@@ -20,6 +21,7 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image(BKG_DAY, "./assets/bkg-day.png");
     this.load.image(BKG_NIGHT, "./assets/bkg-night.png");
     this.load.image(BASE, "./assets/base.png");
+    this.load.image(MESSAGE, "./assets/message.png");
 
     [TEXTURES, BLUE_BIRD_SHEET, RED_BIRD_SHEET, YELLOW_BIRD_SHEET].forEach((key) => {
       this.load.atlas(key, `./atlases/${key}.png`, `./atlases/${key}.json`);
