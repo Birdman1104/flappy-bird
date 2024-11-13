@@ -1,3 +1,4 @@
+import PhaserDoms from "@rollinsafary/phaser3-doms-plugin";
 import * as Phaser from "phaser";
 import Stats from "stats.js";
 import { SoundController } from "./SoundController";
@@ -8,26 +9,26 @@ import { Pipes } from "./views/Pipes";
 import { GameOverPopup } from "./views/Popup";
 import { Score } from "./views/Score";
 
-export class GameScene extends Phaser.Scene {
+export class GameScene extends PhaserDoms.Scene {
   private stats: Stats;
 
-  private spaceKey: Phaser.Input.Keyboard.Key;
+  // private spaceKey: Phaser.Input.Keyboard.Key;
 
   private score = 0;
   private bestScore = getBestScore();
   private scoreText: Score;
 
-  private flash: Phaser.GameObjects.Graphics;
-  private bkgDay: Phaser.GameObjects.TileSprite;
-  private bkgNight: Phaser.GameObjects.TileSprite;
-  private base: Phaser.GameObjects.TileSprite;
+  // private flash: Phaser.GameObjects.Graphics;
+  private bkgDay: PhaserDoms.GameObjects.Image;
+  private bkgNight: PhaserDoms.GameObjects.Image;
+  private base: PhaserDoms.GameObjects.Sprite;
   private bird: Bird;
 
   private pipes: Pipes[] = [];
   private gameOverPopup: GameOverPopup;
-  private message: Phaser.GameObjects.Image;
+  private message: PhaserDoms.GameObjects.Sprite;
 
-  private overlap: Phaser.Physics.Arcade.Collider;
+  // private overlap: Phaser.Physics.Arcade.Collider;
 
   private state: GameState = GameState.undefined;
 
@@ -39,13 +40,13 @@ export class GameScene extends Phaser.Scene {
   public create(): void {
     this.soundController = new SoundController(this);
 
-    this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    // this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     // this.initStats();
     this.buildBg();
     this.buildBase();
     this.buildBird();
     this.drawScore();
-    this.drawFlash();
+    // this.drawFlash();
 
     this.updateGameState(GameState.preAction);
   }
@@ -55,9 +56,9 @@ export class GameScene extends Phaser.Scene {
     while (this.accumulator >= this.frameTime) {
       this.accumulator -= this.frameTime;
 
-      if (Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
-        this.onInputDown();
-      }
+      // if (Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
+      //   this.onInputDown();
+      // }
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -116,10 +117,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   private moveBkg(): void {
-    const speed = getSpeed(this.score);
-    this.bkgDay.tilePositionX += speed * 0.8;
-    this.bkgNight.tilePositionX += speed * 0.8;
-    this.base.tilePositionX += speed;
+    // const speed = getSpeed(this.score);
+    // this.bkgDay.tilePositionX += speed * 0.8;
+    // this.bkgNight.tilePositionX += speed * 0.8;
+    // this.base.tilePositionX += speed;
   }
 
   private movePipes(): void {
@@ -166,7 +167,7 @@ export class GameScene extends Phaser.Scene {
         this.soundController.playHit();
         this.soundController.playDie();
         this.bird.die();
-        this.flashScreen();
+        // this.flashScreen();
         this.stopTweens();
         break;
       case GameState.action:
@@ -195,7 +196,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private buildBg(): void {
-    this.bkgDay = this.add.tileSprite(256, 256, 512, 512, BKG_DAY);
+    this.bkgDay = this.add.sprite(256, 256, BKG_DAY);
     this.bkgDay.on("pointerdown", () => this.onInputDown());
 
     this.bkgNight = this.add.tileSprite(256, 256, 512, 512, BKG_NIGHT);
@@ -231,8 +232,8 @@ export class GameScene extends Phaser.Scene {
   private destroyPipes(): void {
     this.pipes.forEach((p) => p.destroy());
     this.pipes = [];
-    this.overlap?.destroy();
-    this.overlap = null;
+    // this.overlap?.destroy();
+    // this.overlap = null;
   }
 
   private drawScore(): void {
@@ -258,7 +259,7 @@ export class GameScene extends Phaser.Scene {
       ease: "Linear",
       repeat: 0,
       onComplete: () => {
-        this.flash.disableInteractive();
+        // this.flash.disableInteractive();
         this.bkgDay.setInteractive();
       },
     });
@@ -284,9 +285,9 @@ export class GameScene extends Phaser.Scene {
   }
 
   private updateOverlap(): void {
-    const allPipes = this.pipes.map((p) => p.pipes).flat();
-    this.overlap?.destroy();
-    this.overlap = this.physics.add.overlap(this.bird, allPipes, () => this.updateGameState(GameState.die));
+    // const allPipes = this.pipes.map((p) => p.pipes).flat();
+    // this.overlap?.destroy();
+    // this.overlap = this.physics.add.overlap(this.bird, allPipes, () => this.updateGameState(GameState.die));
   }
 
   private changeLocalStorage(): void {

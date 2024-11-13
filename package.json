@@ -35,6 +35,7 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "@rollinsafary/phaser3-doms-plugin": "^0.0.3",
     "phaser": "^3.55.2"
   }
 }
