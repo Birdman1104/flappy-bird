@@ -14,19 +14,17 @@ module.exports = () => {
     entry: {
       app: {
         import: [PATHS.index],
-        dependOn: "modules",
       },
-      modules: ["phaser"],
     },
 
     output: {
       publicPath: "",
       path: PATHS.dist,
-      filename: "[name].[contenthash].js",
+      filename: "[name].js",
     },
 
     resolve: {
-      extensions: [".ts", ".tsx", ".js", ".jsx"],
+      extensions: [".ts", ".js"],
     },
 
     plugins: [
