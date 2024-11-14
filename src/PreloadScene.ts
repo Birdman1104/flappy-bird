@@ -39,7 +39,6 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   private onLoadComplete(): void {
-    // this.game.scene.stop(SCENE_NAMES.preload);
     this.game.scene.start(SCENE_NAMES.game);
   }
 }

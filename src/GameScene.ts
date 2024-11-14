@@ -48,6 +48,8 @@ export class GameScene extends Phaser.Scene {
     this.drawFlash();
 
     this.updateGameState(GameState.preAction);
+
+    window.ysdk?.features.LoadingAPI?.ready();
   }
 
   public update(_time: number, dt: number): void {
@@ -152,13 +154,14 @@ export class GameScene extends Phaser.Scene {
     if (this.state === state) return;
 
     this.state = state;
-
+    console.log("state", state);
     switch (this.state) {
       case GameState.preAction:
         this.reset();
         this.resetBkg();
         break;
       case GameState.result:
+        window.ysdk?.features.GameplayAPI?.stop();
         this.showPopup();
         this.changeLocalStorage();
         break;
@@ -170,6 +173,7 @@ export class GameScene extends Phaser.Scene {
         this.stopTweens();
         break;
       case GameState.action:
+        window.ysdk?.features.GameplayAPI?.start();
         this.startDaySwitching();
         break;
       default:
@@ -317,8 +321,6 @@ export class GameScene extends Phaser.Scene {
         this.flash.alpha = 0;
       },
     });
-    // this.flash.alpha = 1;
-    // this.flash.setInteractive();
   }
 
   private startDaySwitching(): void {
