@@ -12,6 +12,8 @@ import { Score } from "./views/Score";
 export class GameScene extends Phaser.Scene {
   private stats: Stats;
 
+  private gamesPlayedInSession = 0;
+
   private spaceKey: Phaser.Input.Keyboard.Key;
 
   private score = 0;
@@ -61,8 +63,6 @@ export class GameScene extends Phaser.Scene {
         this.onInputDown();
       }
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       this.stats?.update();
 
       switch (this.state) {
@@ -154,31 +154,60 @@ export class GameScene extends Phaser.Scene {
     if (this.state === state) return;
 
     this.state = state;
-    console.log("state", state);
     switch (this.state) {
       case GameState.preAction:
-        this.reset();
-        this.resetBkg();
+        this.onPreActionState();
         break;
       case GameState.result:
-        window.ysdk?.features.GameplayAPI?.stop();
-        this.showPopup();
-        this.changeLocalStorage();
+        this.onResultState();
         break;
       case GameState.die:
-        this.soundController.playHit();
-        this.soundController.playDie();
-        this.bird.die();
-        this.flashScreen();
-        this.stopTweens();
+        this.onDieState();
+
         break;
       case GameState.action:
-        window.ysdk?.features.GameplayAPI?.start();
-        this.startDaySwitching();
+        this.onActionState();
+
         break;
       default:
         break;
     }
+  }
+
+  private onPreActionState(): void {
+    this.reset();
+    this.resetBkg();
+  }
+
+  private onResultState(): void {
+    window.ysdk?.features.GameplayAPI?.stop();
+    this.changeLocalStorage();
+
+    this.gamesPlayedInSession++;
+
+    if (this.gamesPlayedInSession % CONFIGS.adFrequency === 0) {
+      window.ysdk?.adv?.showFullscreenAdv({
+        callbacks: {
+          onClose: () => this.showPopup(),
+          onError: () => this.showPopup(),
+        },
+      });
+    } else {
+      this.showPopup();
+    }
+  }
+
+  private onDieState(): void {
+    this.soundController.playHit();
+    this.soundController.playDie();
+    this.bird.die();
+    this.flashScreen();
+    this.stopTweens();
+  }
+
+  private onActionState(): void {
+    window.ysdk?.features.GameplayAPI?.start();
+    this.startDaySwitching();
   }
 
   private startAction(): void {
@@ -337,8 +366,6 @@ export class GameScene extends Phaser.Scene {
 
   private initStats(): void {
     this.stats = new Stats();
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     document.body.appendChild(this.stats.dom);
   }
 }

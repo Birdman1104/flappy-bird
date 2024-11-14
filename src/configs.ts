@@ -6,11 +6,13 @@ export const CONFIGS: {
   birdGravity: number;
   birdJump: number;
   bestScore: number;
+  adFrequency: number;
 } = {
   speed: 2,
   birdGravity: 800,
   birdJump: 200,
   bestScore: 0,
+  adFrequency: 3,
 };
 
 export const birdKeys = ["blue", "red", "yellow"];
