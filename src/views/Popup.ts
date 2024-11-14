@@ -1,4 +1,5 @@
 import * as Phaser from "phaser";
+import { CONFIGS } from "../configs";
 import { TEXTURES } from "../constants";
 
 export class GameOverPopup extends Phaser.GameObjects.Container {
@@ -8,7 +9,7 @@ export class GameOverPopup extends Phaser.GameObjects.Container {
   private bestScoreText: Phaser.GameObjects.Text;
   private proposal: Phaser.GameObjects.Text;
 
-  public constructor(public scene: Phaser.Scene, private score: number, private bestScore: number) {
+  public constructor(public scene: Phaser.Scene, private score: number) {
     super(scene);
 
     this.build();
@@ -30,11 +31,7 @@ export class GameOverPopup extends Phaser.GameObjects.Container {
     this.bg = this.scene.add.image(+w / 2, +h / 2, TEXTURES, "popup.png");
     this.gameOver = this.scene.add.image(+w / 2, +h / 2 - 42, TEXTURES, "gameover.png");
     this.playerScoreText = this.scene.add.text(+w / 2, +h / 2, `You scored - ${this.score}`);
-    this.bestScoreText = this.scene.add.text(
-      +w / 2,
-      +h / 2 + 21,
-      `Best score - ${Math.max(this.score, this.bestScore)}`
-    );
+    this.bestScoreText = this.scene.add.text(+w / 2, +h / 2 + 21, `Best score - ${CONFIGS.bestScore}`);
     this.proposal = this.scene.add.text(+w / 2, +h / 2 + 52, `TAP TO PLAY AGAIN`, { fontSize: "20px" });
 
     this.playerScoreText.setOrigin(0.5);

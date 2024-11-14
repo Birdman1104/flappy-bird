@@ -15,6 +15,12 @@
       YaGames.init().then((ysdk) => {
         console.log("Yandex SDK initialized");
         window.ysdk = ysdk;
+
+        ysdk.getPlayer({ scopes: false }).then((player) => {
+          console.log("Player info", player);
+
+          window.thePlayer = player;
+        });
       });
     </script>
     <title>Flappy Bird by Birdman</title>

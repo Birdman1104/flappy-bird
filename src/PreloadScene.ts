@@ -1,4 +1,6 @@
 import * as Phaser from "phaser";
+import { getBestScore } from "./Utils";
+import { CONFIGS } from "./configs";
 import {
   BASE,
   BKG_DAY,
@@ -16,7 +18,7 @@ export class PreloadScene extends Phaser.Scene {
     //
   }
 
-  public create(): void {
+  public async create(): Promise<void> {
     this.load.image(BKG_DAY, "./assets/bkg-day.png");
     this.load.image(BKG_NIGHT, "./assets/bkg-night.png");
     this.load.image(BASE, "./assets/base.png");
@@ -28,6 +30,13 @@ export class PreloadScene extends Phaser.Scene {
     Object.keys(SOUNDS).forEach((key) => {
       this.load.audio(key, `./sounds/${key}.wav`);
     });
+
+    try {
+      CONFIGS.bestScore = await getBestScore();
+    } catch (error) {
+      console.error("ERROR", error);
+      CONFIGS.bestScore = 0;
+    }
 
     this.load.on("progress", this.onFileLoadComplete, this);
     this.load.on("complete", this.onLoadComplete, this);

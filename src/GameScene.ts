@@ -1,7 +1,8 @@
 import * as Phaser from "phaser";
 import Stats from "stats.js";
 import { SoundController } from "./SoundController";
-import { getBestScore, getSpeed, updateBestScore } from "./Utils";
+import { getSpeed, updateBestScore } from "./Utils";
+import { CONFIGS } from "./configs";
 import { BASE, BKG_DAY, BKG_NIGHT, GameState, TEXTURES } from "./constants";
 import { Bird } from "./views/Bird";
 import { Pipes } from "./views/Pipes";
@@ -14,7 +15,6 @@ export class GameScene extends Phaser.Scene {
   private spaceKey: Phaser.Input.Keyboard.Key;
 
   private score = 0;
-  private bestScore = getBestScore();
   private scoreText: Score;
 
   private flash: Phaser.GameObjects.Graphics;
@@ -218,7 +218,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private showPopup(): void {
-    this.gameOverPopup = new GameOverPopup(this, this.score, this.bestScore);
+    this.gameOverPopup = new GameOverPopup(this, this.score);
     this.add.existing(this.gameOverPopup);
   }
 
@@ -294,8 +294,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   private changeLocalStorage(): void {
-    this.bestScore = Math.max(this.score, this.bestScore);
-    updateBestScore(this.bestScore);
+    if (this.score > CONFIGS.bestScore) {
+      CONFIGS.bestScore = this.score;
+      updateBestScore(CONFIGS.bestScore);
+    }
   }
 
   private resetBkg(): void {
