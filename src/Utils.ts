@@ -2,7 +2,7 @@ import { CONFIGS } from "./configs";
 import { STORAGE_NAME } from "./constants";
 
 export const getSpeed = (score: number): number => {
-  return CONFIGS.speed + score * 0.1;
+  return CONFIGS.speed + score * 0.05;
 };
 
 export const getBestScore = (): number => {
@@ -10,8 +10,12 @@ export const getBestScore = (): number => {
 };
 
 export const updateBestScore = (score: number): void => {
-  const bestScore = getBestScore();
-  if (score > bestScore) {
+  updateLocalStorage(score);
+};
+
+const updateLocalStorage = (score: number): void => {
+  if (score > CONFIGS.bestScore) {
+    CONFIGS.bestScore = score;
     localStorage.setItem(STORAGE_NAME, score.toString());
   }
 };

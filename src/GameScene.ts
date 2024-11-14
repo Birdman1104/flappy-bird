@@ -1,7 +1,8 @@
 import * as Phaser from "phaser";
 import Stats from "stats.js";
 import { SoundController } from "./SoundController";
-import { getBestScore, getSpeed, updateBestScore } from "./Utils";
+import { getSpeed, updateBestScore } from "./Utils";
+import { CONFIGS } from "./configs";
 import { BASE, BKG_DAY, BKG_NIGHT, GameState, TEXTURES } from "./constants";
 import { Bird } from "./views/Bird";
 import { Pipes } from "./views/Pipes";
@@ -11,10 +12,11 @@ import { Score } from "./views/Score";
 export class GameScene extends Phaser.Scene {
   private stats: Stats;
 
+  private gamesPlayedInSession = 0;
+
   private spaceKey: Phaser.Input.Keyboard.Key;
 
   private score = 0;
-  private bestScore = getBestScore();
   private scoreText: Score;
 
   private flash: Phaser.GameObjects.Graphics;
@@ -44,6 +46,7 @@ export class GameScene extends Phaser.Scene {
     this.buildBg();
     this.buildBase();
     this.buildBird();
+    this.buildPopup();
     this.drawScore();
     this.drawFlash();
 
@@ -59,8 +62,6 @@ export class GameScene extends Phaser.Scene {
         this.onInputDown();
       }
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       this.stats?.update();
 
       switch (this.state) {
@@ -89,7 +90,7 @@ export class GameScene extends Phaser.Scene {
         this.startAction();
         break;
       case GameState.result:
-        this.gameOverPopup.destroy();
+        this.gameOverPopup.hide();
         this.updateGameState(GameState.preAction);
         break;
 
@@ -152,29 +153,48 @@ export class GameScene extends Phaser.Scene {
     if (this.state === state) return;
 
     this.state = state;
-
     switch (this.state) {
       case GameState.preAction:
-        this.reset();
-        this.resetBkg();
+        this.onPreActionState();
         break;
       case GameState.result:
-        this.showPopup();
-        this.changeLocalStorage();
+        this.onResultState();
         break;
       case GameState.die:
-        this.soundController.playHit();
-        this.soundController.playDie();
-        this.bird.die();
-        this.flashScreen();
-        this.stopTweens();
+        this.onDieState();
         break;
       case GameState.action:
-        this.startDaySwitching();
+        this.onActionState();
+
         break;
       default:
         break;
     }
+  }
+
+  private onPreActionState(): void {
+    this.reset();
+    this.resetBkg();
+  }
+
+  private onResultState(): void {
+    this.changeLocalStorage();
+
+    this.gamesPlayedInSession++;
+    this.showPopup();
+  }
+
+  private onDieState(): void {
+    this.soundController.playHit();
+    this.soundController.playDie();
+    this.bird.die();
+    this.flashScreen();
+    this.stopTweens();
+  }
+
+  private onActionState(): void {
+    this.hidePopup();
+    this.startDaySwitching();
   }
 
   private startAction(): void {
@@ -213,9 +233,19 @@ export class GameScene extends Phaser.Scene {
     this.add.existing(this.bird);
   }
 
-  private showPopup(): void {
-    this.gameOverPopup = new GameOverPopup(this, this.score, this.bestScore);
+  private buildPopup(): void {
+    this.gameOverPopup = new GameOverPopup(this);
+    this.gameOverPopup.setDepth(6);
+    this.gameOverPopup.hide();
     this.add.existing(this.gameOverPopup);
+  }
+
+  private showPopup(): void {
+    this.gameOverPopup.show(this.score);
+  }
+
+  private hidePopup(): void {
+    this.gameOverPopup.hide();
   }
 
   private addPipe(): void {
@@ -290,8 +320,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   private changeLocalStorage(): void {
-    this.bestScore = Math.max(this.score, this.bestScore);
-    updateBestScore(this.bestScore);
+    if (this.score > CONFIGS.bestScore) {
+      CONFIGS.bestScore = this.score;
+      updateBestScore(CONFIGS.bestScore);
+    }
   }
 
   private resetBkg(): void {
@@ -317,8 +349,6 @@ export class GameScene extends Phaser.Scene {
         this.flash.alpha = 0;
       },
     });
-    // this.flash.alpha = 1;
-    // this.flash.setInteractive();
   }
 
   private startDaySwitching(): void {
@@ -333,8 +363,6 @@ export class GameScene extends Phaser.Scene {
 
   private initStats(): void {
     this.stats = new Stats();
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     document.body.appendChild(this.stats.dom);
   }
 }

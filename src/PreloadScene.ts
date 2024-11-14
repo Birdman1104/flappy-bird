@@ -1,4 +1,6 @@
 import * as Phaser from "phaser";
+import { getBestScore } from "./Utils";
+import { CONFIGS } from "./configs";
 import {
   BASE,
   BKG_DAY,
@@ -29,6 +31,7 @@ export class PreloadScene extends Phaser.Scene {
       this.load.audio(key, `./sounds/${key}.wav`);
     });
 
+    CONFIGS.bestScore = getBestScore();
     this.load.on("progress", this.onFileLoadComplete, this);
     this.load.on("complete", this.onLoadComplete, this);
     this.load.start();

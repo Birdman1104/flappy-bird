@@ -5,10 +5,12 @@ export const CONFIGS: {
   speed: number;
   birdGravity: number;
   birdJump: number;
+  bestScore: number;
 } = {
   speed: 2,
   birdGravity: 800,
   birdJump: 200,
+  bestScore: 0,
 };
 
 export const birdKeys = ["blue", "red", "yellow"];

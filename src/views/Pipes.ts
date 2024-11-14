@@ -22,11 +22,10 @@ export class Pipes extends Phaser.GameObjects.Container {
   }
 
   private setup(): void {
-    // const frame = this.isNight ? "pipe-green.png" : "pipe-red.png";
-    const pipe1Y = Math.random() * 150 + 380;
+    const pipe1Y = Math.random() * 150 + 350;
     const pipe1 = this.scene.physics.add.sprite(0, pipe1Y, TEXTURES, "pipe-green.png");
 
-    const pipe2Y = pipe1Y - pipe1.height - (Math.random() * 80 + 100) + this.score * 2;
+    const pipe2Y = pipe1Y - pipe1.height - (Math.random() * 80 + 80) + this.score * 1.5;
     const pipe2 = this.scene.physics.add.sprite(0, pipe2Y, TEXTURES, "pipe-green.png");
     pipe2.scaleY = -1;
 
