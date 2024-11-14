@@ -46,6 +46,7 @@ export class GameScene extends Phaser.Scene {
     this.buildBg();
     this.buildBase();
     this.buildBird();
+    this.buildPopup();
     this.drawScore();
     this.drawFlash();
 
@@ -91,7 +92,7 @@ export class GameScene extends Phaser.Scene {
         this.startAction();
         break;
       case GameState.result:
-        this.gameOverPopup.destroy();
+        this.gameOverPopup.hide();
         this.updateGameState(GameState.preAction);
         break;
 
@@ -163,7 +164,6 @@ export class GameScene extends Phaser.Scene {
         break;
       case GameState.die:
         this.onDieState();
-
         break;
       case GameState.action:
         this.onActionState();
@@ -207,6 +207,7 @@ export class GameScene extends Phaser.Scene {
 
   private onActionState(): void {
     window.ysdk?.features.GameplayAPI?.start();
+    this.hidePopup();
     this.startDaySwitching();
   }
 
@@ -246,9 +247,19 @@ export class GameScene extends Phaser.Scene {
     this.add.existing(this.bird);
   }
 
-  private showPopup(): void {
-    this.gameOverPopup = new GameOverPopup(this, this.score);
+  private buildPopup(): void {
+    this.gameOverPopup = new GameOverPopup(this);
+    this.gameOverPopup.setDepth(6);
+    this.gameOverPopup.hide();
     this.add.existing(this.gameOverPopup);
+  }
+
+  private showPopup(): void {
+    this.gameOverPopup.show(this.score);
+  }
+
+  private hidePopup(): void {
+    this.gameOverPopup.hide();
   }
 
   private addPipe(): void {

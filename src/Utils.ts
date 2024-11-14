@@ -2,7 +2,7 @@ import { CONFIGS } from "./configs";
 import { STORAGE_NAME } from "./constants";
 
 export const getSpeed = (score: number): number => {
-  return CONFIGS.speed + score * 0.1;
+  return CONFIGS.speed + score * 0.05;
 };
 
 export const getBestScore = async (): Promise<number> => {
