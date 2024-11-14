@@ -10,6 +10,13 @@
       content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width, viewport-fit=cover"
     />
     <script src="/sdk.js"></script>
+
+    <script>
+      YaGames.init().then((ysdk) => {
+        console.log("Yandex SDK initialized");
+        window.ysdk = ysdk;
+      });
+    </script>
     <title>Flappy Bird by Birdman</title>
     <style>
       * {
@@ -26,12 +33,5 @@
     </style>
   </head>
 
-  <body>
-    <script>
-      YaGames.init().then((ysdk) => {
-        console.log("Yandex SDK initialized");
-        window.ysdk = ysdk;
-      });
-    </script>
-  </body>
+  <body></body>
 </html>

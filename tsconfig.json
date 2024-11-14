@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "module": "commonjs",
     "target": "esnext",
@@ -12,5 +12,5 @@
     "allowJs": true,
     "baseUrl": "./"
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "./.eslintrc.js"]
 }
