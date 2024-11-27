@@ -12,6 +12,8 @@ import { Score } from "./views/Score";
 export class GameScene extends Phaser.Scene {
   private stats: Stats;
 
+  private isAdShown = false;
+
   private gamesPlayedInSession = 0;
 
   private spaceKey: Phaser.Input.Keyboard.Key;
@@ -81,6 +83,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private onInputDown(): void {
+    if (this.isAdShown) return;
     switch (this.state) {
       case GameState.action:
         this.soundController.playWing();
@@ -186,6 +189,7 @@ export class GameScene extends Phaser.Scene {
     this.gamesPlayedInSession++;
 
     if (this.gamesPlayedInSession % CONFIGS.adFrequency === 0) {
+      this.isAdShown = true;
       window.ysdk?.adv?.showFullscreenAdv({
         callbacks: {
           onClose: () => this.showPopup(),
@@ -255,6 +259,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private showPopup(): void {
+    this.isAdShown = false;
     this.gameOverPopup.show(this.score);
   }
 
